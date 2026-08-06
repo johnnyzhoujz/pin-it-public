@@ -24,9 +24,14 @@ function loadScreenCapturePermission(options) {
   }
 }
 
-async function acquireScreenCapturePermission({ getStatus, nativePermission, openSettings }) {
+async function acquireScreenCapturePermission({
+  getStatus,
+  nativePermission,
+  openSettings,
+  requestAlreadyAttempted = false
+}) {
   const status = readStatus(getStatus);
-  if (status === "granted" || readNativePreflight(nativePermission)) {
+  if (readNativePreflight(nativePermission)) {
     return { granted: true, reason: "granted", status };
   }
 
@@ -45,11 +50,21 @@ async function acquireScreenCapturePermission({ getStatus, nativePermission, ope
     return { granted: true, reason: "granted", status };
   }
 
-  if (["denied", "restricted"].includes(status) && typeof openSettings === "function") {
+  const settingsOpened =
+    requestAlreadyAttempted &&
+    ["denied", "restricted"].includes(status) &&
+    typeof openSettings === "function";
+  if (settingsOpened) {
     await openSettings().catch(() => {});
   }
 
-  return { granted: false, reason: "permission-required", status };
+  return {
+    granted: false,
+    reason: "permission-required",
+    status,
+    requestAttempted: true,
+    settingsOpened
+  };
 }
 
 function readStatus(getStatus) {

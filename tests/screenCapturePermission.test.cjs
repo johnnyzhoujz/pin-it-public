@@ -30,15 +30,16 @@ run().catch((error) => {
 });
 
 async function run() {
-  await grantedStatusSkipsNativeRequest();
+  await grantedElectronStatusDoesNotBypassNativePreflight();
   await nativePreflightSkipsNativeRequest();
   await undeterminedStatusRequestsFromTheApp();
-  await deniedStatusOpensSettingsAfterRegistrationAttempt();
+  await firstDeniedRequestLeavesTheSystemPromptAlone();
+  await repeatedDeniedRequestOpensSettings();
   await missingNativeHelperStopsCapture();
   console.log("screen capture permission tests passed");
 }
 
-async function grantedStatusSkipsNativeRequest() {
+async function grantedElectronStatusDoesNotBypassNativePreflight() {
   let requestCount = 0;
   const result = await acquireScreenCapturePermission({
     getStatus: () => "granted",
@@ -51,8 +52,9 @@ async function grantedStatusSkipsNativeRequest() {
     }
   });
 
-  assert.equal(result.granted, true);
-  assert.equal(requestCount, 0);
+  assert.equal(result.granted, false);
+  assert.equal(result.requestAttempted, true);
+  assert.equal(requestCount, 1);
 }
 
 async function nativePreflightSkipsNativeRequest() {
@@ -92,13 +94,15 @@ async function undeterminedStatusRequestsFromTheApp() {
   assert.deepEqual(result, {
     granted: false,
     reason: "permission-required",
-    status: "not-determined"
+    status: "not-determined",
+    requestAttempted: true,
+    settingsOpened: false
   });
   assert.equal(requestCount, 1);
   assert.equal(settingsCount, 0);
 }
 
-async function deniedStatusOpensSettingsAfterRegistrationAttempt() {
+async function firstDeniedRequestLeavesTheSystemPromptAlone() {
   let requestCount = 0;
   let settingsCount = 0;
   const result = await acquireScreenCapturePermission({
@@ -116,6 +120,31 @@ async function deniedStatusOpensSettingsAfterRegistrationAttempt() {
   });
 
   assert.equal(result.granted, false);
+  assert.equal(result.settingsOpened, false);
+  assert.equal(requestCount, 1);
+  assert.equal(settingsCount, 0);
+}
+
+async function repeatedDeniedRequestOpensSettings() {
+  let requestCount = 0;
+  let settingsCount = 0;
+  const result = await acquireScreenCapturePermission({
+    getStatus: () => "denied",
+    nativePermission: {
+      preflight: () => false,
+      request: () => {
+        requestCount += 1;
+        return false;
+      }
+    },
+    openSettings: async () => {
+      settingsCount += 1;
+    },
+    requestAlreadyAttempted: true
+  });
+
+  assert.equal(result.granted, false);
+  assert.equal(result.settingsOpened, true);
   assert.equal(requestCount, 1);
   assert.equal(settingsCount, 1);
 }

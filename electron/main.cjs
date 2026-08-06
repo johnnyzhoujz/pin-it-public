@@ -68,6 +68,7 @@ let sidecarSide = "right";
 let enqueueStoreWrite = null;
 let mcpSetupState = { configured: [], failed: [], results: [] };
 let startupStorageRecovery = null;
+let screenCapturePermissionRequestAttempted = false;
 let onboardingState = {
   flowVersion: ONBOARDING_FLOW_VERSION,
   clipboardLessonComplete: true,
@@ -742,8 +743,10 @@ async function captureScreenshotRegion() {
   const permission = await acquireScreenCapturePermission({
     getStatus: () => systemPreferences.getMediaAccessStatus("screen"),
     nativePermission: nativeScreenCapturePermission,
-    openSettings: () => shell.openExternal(SCREEN_CAPTURE_SETTINGS_URL)
+    openSettings: () => shell.openExternal(SCREEN_CAPTURE_SETTINGS_URL),
+    requestAlreadyAttempted: screenCapturePermissionRequestAttempted
   });
+  screenCapturePermissionRequestAttempted ||= permission.requestAttempted === true;
   if (!permission.granted) {
     sendToRenderer("native:status", {
       available: true,
@@ -751,7 +754,9 @@ async function captureScreenshotRegion() {
       message:
         permission.reason === "native-helper-unavailable"
           ? "Pin It couldn't request Screen Recording permission."
-          : "Enable Pin It under Screen & System Audio Recording, then reopen Pin It."
+          : permission.settingsOpened
+            ? "Enable Pin It under Screen & System Audio Recording, then reopen Pin It."
+            : "Allow Pin It to record your screen and audio, then reopen Pin It."
     });
     return false;
   }
