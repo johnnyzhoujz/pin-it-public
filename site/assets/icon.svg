@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <filter id="tileShadow" x="24" y="24" width="976" height="976" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="28" stdDeviation="34" flood-color="#18201c" flood-opacity=".14"/>
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#18201c" flood-opacity=".07"/>
+    </filter>
+    <filter id="stickyShadow" x="76" y="116" width="872" height="842" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="20" stdDeviation="21" flood-color="#1f2522" flood-opacity=".13"/>
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#1f2522" flood-opacity=".07"/>
+    </filter>
+    <filter id="pinShadow" x="250" y="154" width="524" height="800" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="15" stdDeviation="14" flood-color="#1f2522" flood-opacity=".24"/>
+      <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#1f2522" flood-opacity=".12"/>
+    </filter>
+    <linearGradient id="tileFace" x1="250" y1="148" x2="760" y2="896" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset=".84" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#fbfaf6"/>
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(512 512) scale(.78) translate(-512 -512)">
+  <rect x="64" y="64" width="896" height="896" rx="196" fill="url(#tileFace)" filter="url(#tileShadow)"/>
+  <rect x="65" y="65" width="894" height="894" rx="195" fill="none" stroke="#1f2522" stroke-opacity=".045" stroke-width="2"/>
+
+  <g filter="url(#stickyShadow)">
+    <g transform="rotate(-10 512 518)">
+      <rect x="172" y="214" width="520" height="520" rx="28" fill="#efd2c1"/>
+    </g>
+    <g transform="rotate(10 512 518)">
+      <rect x="332" y="210" width="520" height="520" rx="28" fill="#e3d9e8"/>
+    </g>
+    <g transform="rotate(-24 512 574)">
+      <rect x="100" y="370" width="520" height="520" rx="28" fill="#dce8cf"/>
+    </g>
+    <g transform="rotate(23 512 574)">
+      <rect x="404" y="370" width="520" height="520" rx="28" fill="#d7e5ec"/>
+    </g>
+    <rect x="248" y="268" width="528" height="528" rx="28" fill="#f4e7b7"/>
+    <path d="M248 620c82 50 176 75 282 75 91 0 174-19 248-55v156H248Z" fill="#fff8df" opacity=".3"/>
+  </g>
+
+  <g transform="rotate(-8 512 552)" filter="url(#pinShadow)" fill="none" stroke="#16211d" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M344 222c85-51 251-51 336 0" stroke-width="68"/>
+    <path d="M402 266c64 106 54 194-31 260" stroke-width="68"/>
+    <path d="M622 266c-64 106-54 194 31 260" stroke-width="68"/>
+    <path d="M371 526c91 63 240 63 331 0" stroke-width="68"/>
+    <path d="M512 562v354" stroke-width="72"/>
+    <path d="M354 720h316" stroke-width="64"/>
+  </g>
+  </g>
+</svg>
