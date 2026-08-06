@@ -89,6 +89,9 @@
       "buildResources": "build",
       "output": "release"
     },
+    "dmg": {
+      "sign": true
+    },
     "mac": {
       "category": "public.app-category.productivity",
       "icon": "build/icon.icns",

@@ -10,6 +10,7 @@ const {
 } = require("../scripts/finalize-mac-release.cjs");
 
 const packageJson = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "package.json"), "utf8"));
+assert.equal(packageJson.build.dmg.sign, true);
 for (const target of packageJson.build.mac.target) {
   assert.deepEqual(target.arch, ["arm64", "x64"]);
 }
