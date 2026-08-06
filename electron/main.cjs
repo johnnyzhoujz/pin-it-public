@@ -20,6 +20,11 @@ const {
   shouldCopySelectionBeforeCapture
 } = require("./onboardingWindow.cjs");
 const { screenshotCaptureArgs } = require("./screenshotCapture.cjs");
+const {
+  SCREEN_CAPTURE_SETTINGS_URL,
+  acquireScreenCapturePermission,
+  loadScreenCapturePermission
+} = require("./screenCapturePermission.cjs");
 const { generatePinTitle, openAIStatus } = require("./openaiHarness.cjs");
 const { isExternalHttpUrl, isTrustedRendererUrl } = require("./securityPolicy.cjs");
 const {
@@ -38,6 +43,13 @@ const hotkey = process.platform === "darwin" ? appChannel.clipboardHotkeyMac : "
 const screenshotHotkey = process.platform === "darwin" ? appChannel.screenshotHotkeyMac : "";
 const onboardingSampleText = `${productName} saves the useful thing I am looking at right now.`;
 const isMcpSetupSelftest = process.argv.includes("--mcp-setup-selftest");
+const nativeScreenCapturePermission =
+  process.platform === "darwin"
+    ? loadScreenCapturePermission({
+        isPackaged: app.isPackaged,
+        resourcesPath: process.resourcesPath
+      })
+    : null;
 const storeFilesPromise = import("../src/store/files.js");
 const writeQueuePromise = import("../src/store/writeQueue.js");
 const windowModes = {
@@ -724,6 +736,23 @@ async function captureClipboard({ copySelectionFirst = false } = {}) {
 
 async function captureScreenshotRegion() {
   if (process.platform !== "darwin") {
+    return false;
+  }
+
+  const permission = await acquireScreenCapturePermission({
+    getStatus: () => systemPreferences.getMediaAccessStatus("screen"),
+    nativePermission: nativeScreenCapturePermission,
+    openSettings: () => shell.openExternal(SCREEN_CAPTURE_SETTINGS_URL)
+  });
+  if (!permission.granted) {
+    sendToRenderer("native:status", {
+      available: true,
+      code: "screen_recording_permission",
+      message:
+        permission.reason === "native-helper-unavailable"
+          ? "Pin It couldn't request Screen Recording permission."
+          : "Enable Pin It under Screen & System Audio Recording, then reopen Pin It."
+    });
     return false;
   }
 

@@ -1,7 +1,7 @@
 {
   "name": "pin-it",
   "productName": "Pin It",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "private": true,
   "description": "A local pinboard for saving anything you want to reuse with any AI.",
   "author": "Johnny Z",
@@ -33,7 +33,7 @@
     "build": "npm run build:web && npm run build:mcp && npm run build:native",
     "build:web": "vite build",
     "build:mcp": "esbuild electron/mcpServer.mjs --bundle --platform=node --format=esm --target=node18 --outfile=dist-mcp/pinit-mcp.mjs",
-    "build:native": "node scripts/build-keychain-helper.cjs",
+    "build:native": "node scripts/build-keychain-helper.cjs && node scripts/build-screen-permission-addon.cjs",
     "build:icon:mac": "node scripts/build-mac-icon.cjs",
     "build:desktop": "npm run build",
     "dist:mac": "npm run dist:mac:prod",
@@ -57,7 +57,7 @@
     "test:mcp:packaged:dev": "node scripts/test-packaged-mcp.cjs --app \"release-dev/mac-arm64/Pin It Dev.app\" --channel development --require-developer-id",
     "test:mcp:installed:prod": "node scripts/test-packaged-mcp.cjs --app \"/Applications/Pin It.app\" --channel production --require-developer-id",
     "test:mcp:channels": "npm run test:mcp:packaged:dev && npm run test:mcp:installed:prod",
-    "test:node": "node tests/packet.test.js && node tests/store.test.js && node tests/update.test.cjs && node tests/credentialStore.test.cjs && node tests/openaiHarness.test.cjs && node tests/mcpConfig.test.cjs && node tests/appChannel.test.cjs && node tests/onboardingWindow.test.cjs && node tests/onboardingState.test.cjs && node tests/screenshotCapture.test.cjs && node tests/macReleaseManifest.test.cjs && node tests/releaseVersion.test.cjs",
+    "test:node": "node tests/packet.test.js && node tests/store.test.js && node tests/update.test.cjs && node tests/credentialStore.test.cjs && node tests/openaiHarness.test.cjs && node tests/mcpConfig.test.cjs && node tests/appChannel.test.cjs && node tests/onboardingWindow.test.cjs && node tests/onboardingState.test.cjs && node tests/screenshotCapture.test.cjs && node tests/screenCapturePermission.test.cjs && node tests/siteReleaseDownloads.test.js && node tests/macReleaseManifest.test.cjs && node tests/releaseVersion.test.cjs",
     "test:ui": "vitest run"
   },
   "main": "electron/main.cjs",

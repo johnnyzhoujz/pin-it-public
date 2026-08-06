@@ -5,13 +5,13 @@ const {
   verifyReleaseVersion
 } = require("../scripts/verify-release-version.cjs");
 
-assert.equal(expectedTag("0.2.6"), "v0.2.6");
-assert.equal(normalizeTag("refs/tags/v0.2.6"), "v0.2.6");
-assert.equal(verifyReleaseVersion("0.2.6", "v0.2.6"), "v0.2.6");
+assert.equal(expectedTag("0.2.7"), "v0.2.7");
+assert.equal(normalizeTag("refs/tags/v0.2.7"), "v0.2.7");
+assert.equal(verifyReleaseVersion("0.2.7", "v0.2.7"), "v0.2.7");
 assert.throws(
-  () => verifyReleaseVersion("0.2.6", "v0.2.5"),
+  () => verifyReleaseVersion("0.2.7", "v0.2.6"),
   /does not match package version/
 );
-assert.throws(() => verifyReleaseVersion("0.2.6", ""), /release tag is required/i);
+assert.throws(() => verifyReleaseVersion("0.2.7", ""), /release tag is required/i);
 
 console.log("release version tests passed");

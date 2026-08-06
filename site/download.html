@@ -909,7 +909,7 @@
         <p>Both installers are Pin It. Pick the one that matches the chip inside your Mac.</p>
         <ul class="release-facts" aria-label="Release details">
           <li><i class="ph ph-laptop" aria-hidden="true"></i> macOS 12 or later</li>
-          <li><i class="ph ph-tag" aria-hidden="true"></i> Pin It 0.2.6</li>
+          <li><i class="ph ph-tag" aria-hidden="true"></i> Pin It <span data-release-version>0.2.6</span></li>
         </ul>
       </div>
 
@@ -972,6 +972,11 @@
     </section>
   </main>
 
+  <script type="module">
+    import { syncLatestReleaseDownloads } from "./releaseDownloads.js";
+
+    syncLatestReleaseDownloads();
+  </script>
   <script>
     const themeToggle = document.querySelector(".theme-toggle");
     const systemTheme = window.matchMedia("(prefers-color-scheme: dark)");

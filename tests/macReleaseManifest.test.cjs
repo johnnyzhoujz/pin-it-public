@@ -18,7 +18,7 @@ assert.match(packageJson.scripts.release, /--arm64 --x64 --publish always$/);
 assert.equal(packageJson.build.publish[0].channel, UPDATE_CHANNEL);
 assert.equal(UPDATE_CHANNEL, "justpinit");
 assert.equal(UPDATE_MANIFEST_FILENAME, "justpinit-mac.yml");
-assert.equal(renderArtifactName(packageJson, "arm64", "dmg"), "Pin-It-0.2.6-arm64.dmg");
+assert.equal(renderArtifactName(packageJson, "arm64", "dmg"), "Pin-It-0.2.7-arm64.dmg");
 
 const artifacts = [
   artifact("x64", "zip"),
