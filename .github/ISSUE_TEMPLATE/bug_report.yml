@@ -1,0 +1,60 @@
+name: Bug report
+description: Report a reproducible problem in Pin It
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a problem. Remove API keys,
+        personal pin content, and local file paths before submitting.
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Describe the behavior you observed.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open...
+        2. Press...
+        3. See...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Pin It version or commit
+      placeholder: "0.2.1 or a commit SHA"
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: "macOS version, Mac architecture, Node version, MCP client"
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Additional context
+      description: Add sanitized logs, screenshots, or recordings if useful.
+  - type: checkboxes
+    id: security
+    attributes:
+      label: Security check
+      options:
+        - label: This report does not contain a vulnerability or sensitive data.
+          required: true

@@ -1,0 +1,3541 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f6f3ea" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#090b11" media="(prefers-color-scheme: dark)" />
+  <title>Pin It - A pinboard for anything you'll want again</title>
+  <meta
+    name="description"
+    content="Pin It is a Mac pinboard for saving text, tables, code, and screenshots your AI can use later."
+  />
+  <meta property="og:title" content="Pin It - A pinboard for anything you'll want again" />
+  <meta
+    property="og:description"
+    content="Save anything worth bringing into a future AI conversation."
+  />
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml" />
+  <link rel="preload" href="assets/liquid-glass-map.png" as="image" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;650;700&family=Geist+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300;1,6..72,400;1,6..72,500&display=swap"
+    rel="stylesheet"
+  />
+  <link
+    href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/regular/style.css"
+    rel="stylesheet"
+  />
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+  <script>
+    (() => {
+      const savedTheme = localStorage.getItem("pin-it-marketing-theme");
+      if (savedTheme === "light" || savedTheme === "dark") {
+        document.documentElement.dataset.theme = savedTheme;
+      }
+
+      const replayIntro = new URLSearchParams(window.location.search).get("replayIntro") === "1";
+      const reduceIntroMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      let introSeen = false;
+
+      try {
+        introSeen = sessionStorage.getItem("pin-it-intro-seen") === "1";
+      } catch {
+        introSeen = false;
+      }
+
+      if (!reduceIntroMotion && (replayIntro || !introSeen)) {
+        document.documentElement.classList.add("intro-pending");
+      }
+    })();
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #1f2522;
+      --ink-soft: #3c4540;
+      --muted: #717a75;
+      --quiet: #a0a9a3;
+      --paper: #f6f3ea;
+      --paper-strong: #fffdf7;
+      --panel: rgba(253, 251, 244, 0.94);
+      --panel-solid: #fdfbf4;
+      --panel-soft: rgba(236, 234, 224, 0.76);
+      --canvas: #ede8dc;
+      --line: rgba(31, 37, 34, 0.09);
+      --line-strong: rgba(31, 37, 34, 0.16);
+      --accent: #476d5d;
+      --accent-strong: #31564a;
+      --accent-soft: rgba(71, 109, 93, 0.13);
+      --focus-ring: rgba(88, 111, 103, 0.22);
+      --button-star-rgb: 255, 255, 255;
+      --note-cream: #f4e7b7;
+      --note-mint: #dce8cf;
+      --note-blue: #d7e5ec;
+      --note-lilac: #e3d9e8;
+      --mcp-note-sheen: rgba(255, 255, 255, 0.38);
+      --ambient-light-opacity: 1;
+      --ambient-dark-opacity: 0;
+      --glass-fill-top: rgba(255, 253, 247, 0.48);
+      --glass-fill-bottom: rgba(244, 243, 235, 0.38);
+      --glass-highlight: rgba(255, 255, 255, 0.4);
+      --glass-glow: rgba(210, 224, 214, 0.18);
+      --glass-shadow-haze: rgba(38, 61, 52, 0.07);
+      --glass-filter: blur(12px) saturate(88%) contrast(94%) brightness(1.01);
+      --nav-glass: #bbbbbc;
+      --nav-reflex-light: 1;
+      --nav-reflex-dark: 1;
+      --nav-saturation: 150%;
+      --nav-glass-shadow: rgba(38, 51, 44, 0.18);
+      --intro-ink: #1f2522;
+      --intro-paper-strong: #fffdf7;
+      --intro-note-cream: #f4e7b7;
+      --intro-note-mint: #dce8cf;
+      --intro-note-lilac: #e3d9e8;
+      --key-face: #fffdf7;
+      --key-edge: #d7d2c7;
+      --key-shadow: #c4beb1;
+      --shadow-panel:
+        0 2.2rem 6rem -3.4rem rgba(18, 22, 24, 0.28),
+        0 0.3rem 1.1rem rgba(18, 22, 24, 0.07);
+      --shadow-card:
+        0 1.7rem 4.5rem -3rem rgba(41, 45, 39, 0.3),
+        0 0.12rem 0.35rem rgba(18, 22, 24, 0.06);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-spring: cubic-bezier(0.32, 0.72, 0, 1);
+      font-family: "Geist", "Avenir Next", ui-sans-serif, system-ui, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+    }
+
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --ink: #f3f6ff;
+      --ink-soft: #cfd7e6;
+      --muted: #95a0b3;
+      --quiet: #5f6879;
+      --paper: #090b11;
+      --paper-strong: #111622;
+      --panel: rgba(14, 17, 26, 0.96);
+      --panel-solid: #0e111a;
+      --panel-soft: rgba(27, 32, 45, 0.8);
+      --canvas: #06070b;
+      --line: rgba(226, 232, 240, 0.1);
+      --line-strong: rgba(226, 232, 240, 0.18);
+      --accent: #93a7ff;
+      --accent-strong: #b6c3ff;
+      --accent-soft: rgba(147, 167, 255, 0.16);
+      --focus-ring: rgba(182, 195, 255, 0.24);
+      --button-star-rgb: 0, 0, 0;
+      --note-cream: #1b2030;
+      --note-mint: var(--note-cream);
+      --note-blue: var(--note-cream);
+      --note-lilac: var(--note-cream);
+      --mcp-note-sheen: rgba(255, 255, 255, 0.06);
+      --ambient-light-opacity: 0;
+      --ambient-dark-opacity: 1;
+      --glass-fill-top: rgba(8, 11, 17, 0.26);
+      --glass-fill-bottom: rgba(5, 7, 12, 0.32);
+      --glass-highlight: rgba(183, 196, 255, 0.1);
+      --glass-glow: rgba(72, 92, 136, 0.14);
+      --glass-shadow-haze: rgba(0, 0, 0, 0.24);
+      --glass-filter: blur(10px) saturate(98%) contrast(98%) brightness(1.06);
+      --nav-reflex-light: 0.3;
+      --nav-reflex-dark: 2;
+      --nav-glass-shadow: rgba(0, 0, 0, 0.46);
+      --key-face: #171b26;
+      --key-edge: #292f3d;
+      --key-shadow: #05070b;
+      --shadow-panel:
+        0 2.4rem 6.5rem -3.2rem rgba(0, 0, 0, 0.7),
+        0 0.3rem 1.1rem rgba(0, 0, 0, 0.28);
+      --shadow-card:
+        0 1.8rem 4.8rem -2.9rem rgba(0, 0, 0, 0.72),
+        0 0.12rem 0.35rem rgba(0, 0, 0, 0.3);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        color-scheme: dark;
+        --ink: #f3f6ff;
+        --ink-soft: #cfd7e6;
+        --muted: #95a0b3;
+        --quiet: #5f6879;
+        --paper: #090b11;
+        --paper-strong: #111622;
+        --panel: rgba(14, 17, 26, 0.96);
+        --panel-solid: #0e111a;
+        --panel-soft: rgba(27, 32, 45, 0.8);
+        --canvas: #06070b;
+        --line: rgba(226, 232, 240, 0.1);
+        --line-strong: rgba(226, 232, 240, 0.18);
+        --accent: #93a7ff;
+        --accent-strong: #b6c3ff;
+        --accent-soft: rgba(147, 167, 255, 0.16);
+        --focus-ring: rgba(182, 195, 255, 0.24);
+        --button-star-rgb: 0, 0, 0;
+        --note-cream: #1b2030;
+        --note-mint: var(--note-cream);
+        --note-blue: var(--note-cream);
+        --note-lilac: var(--note-cream);
+        --mcp-note-sheen: rgba(255, 255, 255, 0.06);
+        --ambient-light-opacity: 0;
+        --ambient-dark-opacity: 1;
+        --glass-fill-top: rgba(8, 11, 17, 0.26);
+        --glass-fill-bottom: rgba(5, 7, 12, 0.32);
+        --glass-highlight: rgba(183, 196, 255, 0.1);
+        --glass-glow: rgba(72, 92, 136, 0.14);
+        --glass-shadow-haze: rgba(0, 0, 0, 0.24);
+        --glass-filter: blur(10px) saturate(98%) contrast(98%) brightness(1.06);
+        --nav-reflex-light: 0.3;
+        --nav-reflex-dark: 2;
+        --nav-glass-shadow: rgba(0, 0, 0, 0.46);
+        --key-face: #171b26;
+        --key-edge: #292f3d;
+        --key-shadow: #05070b;
+        --shadow-panel:
+          0 2.4rem 6.5rem -3.2rem rgba(0, 0, 0, 0.7),
+          0 0.3rem 1.1rem rgba(0, 0, 0, 0.28);
+        --shadow-card:
+          0 1.8rem 4.8rem -2.9rem rgba(0, 0, 0, 0.72),
+          0 0.12rem 0.35rem rgba(0, 0, 0, 0.3);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    html {
+      background: var(--paper);
+    }
+
+    body {
+      min-width: 320px;
+      isolation: isolate;
+      background: var(--paper);
+      color: var(--ink);
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .ambient-art,
+    .liquid-glass-veil {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .ambient-art {
+      --ambient-shift-x: 0px;
+      --ambient-shift-y: 0px;
+      --ambient-tilt-x: 0deg;
+      --ambient-tilt-y: 0deg;
+      inset: -3%;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      transform:
+        perspective(1200px)
+        translate3d(var(--ambient-shift-x), var(--ambient-shift-y), 0)
+        rotateX(var(--ambient-tilt-x))
+        rotateY(var(--ambient-tilt-y))
+        scale(1.03);
+      transform-origin: center;
+      transition: opacity 900ms var(--ease-out);
+    }
+
+    .ambient-art--light {
+      background-image: url("assets/ambient-light.webp");
+      opacity: var(--ambient-light-opacity);
+    }
+
+    .ambient-art--dark {
+      background-image: url("assets/ambient-dark.webp");
+      opacity: var(--ambient-dark-opacity);
+    }
+
+    .liquid-glass-veil {
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse at 14% -12%, var(--glass-highlight), transparent 46%),
+        radial-gradient(ellipse at 88% 112%, var(--glass-glow), transparent 48%),
+        linear-gradient(132deg, var(--glass-fill-top), var(--glass-fill-bottom));
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, var(--glass-highlight) 72%, transparent),
+        inset 0 -20vh 42vh -32vh var(--glass-shadow-haze);
+      backdrop-filter: var(--glass-filter);
+      -webkit-backdrop-filter: var(--glass-filter);
+    }
+
+    .liquid-glass-veil::before,
+    .liquid-glass-veil::after {
+      position: absolute;
+      inset: -18%;
+      content: "";
+      transform: translate3d(0, 0, 0);
+    }
+
+    .liquid-glass-veil::before {
+      background:
+        radial-gradient(ellipse at 18% 28%, var(--glass-highlight), transparent 28%),
+        radial-gradient(ellipse at 73% 18%, var(--glass-glow), transparent 25%),
+        radial-gradient(ellipse at 62% 84%, var(--glass-highlight), transparent 31%);
+      opacity: 0.32;
+      mix-blend-mode: soft-light;
+    }
+
+    .liquid-glass-veil::after {
+      background:
+        linear-gradient(
+          118deg,
+          transparent 16%,
+          color-mix(in srgb, var(--glass-highlight) 52%, transparent) 31%,
+          transparent 47%,
+          color-mix(in srgb, var(--glass-glow) 48%, transparent) 68%,
+          transparent 82%
+        );
+      opacity: 0.22;
+      mix-blend-mode: screen;
+    }
+
+    @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+      .liquid-glass-veil {
+        background: color-mix(in srgb, var(--paper) 91%, transparent);
+      }
+    }
+
+    @media (prefers-reduced-transparency: reduce) {
+      .liquid-glass-veil {
+        background: color-mix(in srgb, var(--paper) 92%, transparent);
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+      }
+
+      .liquid-glass-veil::before,
+      .liquid-glass-veil::after {
+        opacity: 0.08;
+      }
+    }
+
+    body::after {
+      position: fixed;
+      inset: 0;
+      z-index: 4;
+      pointer-events: none;
+      content: "";
+      opacity: 0.026;
+      background-image:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.65'/%3E%3C/svg%3E");
+      mix-blend-mode: multiply;
+    }
+
+    .intro-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 12;
+      display: none;
+      overflow: hidden;
+      place-items: center;
+      background:
+        radial-gradient(circle at 50% 46%, var(--accent-soft), transparent 32rem),
+        var(--paper);
+      transform: translate3d(0, 0, 0);
+      will-change: transform;
+    }
+
+    .intro-pending .intro-screen {
+      display: grid;
+    }
+
+    .intro-screen::after {
+      position: absolute;
+      right: 0;
+      bottom: -1px;
+      left: 0;
+      height: 13px;
+      border-top: 1px solid color-mix(in srgb, var(--ink) 13%, transparent);
+      background:
+        linear-gradient(
+          to bottom,
+          color-mix(in srgb, var(--paper-strong) 88%, var(--ink)),
+          color-mix(in srgb, var(--paper) 88%, var(--ink))
+        );
+      box-shadow:
+        0 8px 22px color-mix(in srgb, var(--ink) 16%, transparent),
+        inset 0 1px 0 color-mix(in srgb, var(--paper-strong) 84%, transparent);
+      content: "";
+    }
+
+    .intro-stage {
+      position: relative;
+      width: min(500px, calc(100vw - 42px));
+      perspective: 1200px;
+    }
+
+    .intro-board-shell {
+      position: relative;
+      width: 100%;
+      padding: 9px;
+      border: 1px solid rgba(91, 54, 30, 0.24);
+      border-radius: clamp(28px, 5vw, 44px);
+      aspect-ratio: 1.24 / 1;
+      background:
+        linear-gradient(145deg, rgba(255, 225, 190, 0.34), transparent 34%),
+        #9e6742;
+      box-shadow:
+        0 3.4rem 7rem -3.5rem rgba(54, 31, 19, 0.56),
+        0 1rem 2rem -1.4rem rgba(54, 31, 19, 0.34),
+        inset 0 1px 0 rgba(255, 234, 211, 0.46);
+      opacity: 0;
+      transform: translateY(20px) scale(0.88);
+      transform-style: preserve-3d;
+      will-change: transform, opacity;
+    }
+
+    .intro-board {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      border-radius: clamp(21px, 4vw, 35px);
+      background:
+        radial-gradient(circle at 22% 18%, rgba(255, 229, 195, 0.24), transparent 28%),
+        radial-gradient(circle at 76% 68%, rgba(107, 58, 30, 0.12), transparent 34%),
+        #c98f5f;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 235, 212, 0.5),
+        inset 0 -12px 22px rgba(105, 58, 31, 0.1);
+      isolation: isolate;
+    }
+
+    .intro-board::before {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background-image:
+        radial-gradient(circle at 15% 30%, rgba(81, 45, 26, 0.14) 0 0.7px, transparent 0.9px),
+        radial-gradient(circle at 65% 72%, rgba(255, 235, 213, 0.16) 0 0.8px, transparent 1px);
+      background-position: 0 0, 8px 11px;
+      background-size: 14px 14px, 18px 18px;
+      content: "";
+      opacity: 0.55;
+    }
+
+    .intro-note {
+      position: absolute;
+      z-index: 1;
+      min-height: 114px;
+      padding: 34px 16px 16px;
+      border: 1px solid color-mix(in srgb, var(--intro-paper-strong) 55%, transparent);
+      border-radius: 15px;
+      box-shadow:
+        0 1.4rem 2.4rem -1.5rem rgba(63, 35, 20, 0.42),
+        0 0.16rem 0.35rem rgba(63, 35, 20, 0.15);
+      color: var(--intro-ink);
+      opacity: 0;
+      transform-origin: 50% 8%;
+      will-change: transform, opacity;
+    }
+
+    .intro-note--quote {
+      top: 11%;
+      left: 8%;
+      width: 43%;
+      background: var(--intro-note-cream);
+      transform: rotate(-5deg);
+    }
+
+    .intro-note--visual {
+      top: 15%;
+      right: 7%;
+      width: 36%;
+      background: var(--intro-note-mint);
+      transform: rotate(4deg);
+    }
+
+    .intro-note--code {
+      bottom: 8%;
+      left: 27%;
+      width: 47%;
+      background: var(--intro-note-lilac);
+      transform: rotate(-2deg);
+    }
+
+    .intro-note small {
+      display: block;
+      margin-bottom: 8px;
+      color: color-mix(in srgb, var(--intro-ink) 56%, transparent);
+      font-family: "Geist Mono", ui-monospace, monospace;
+      font-size: 7px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .intro-note p,
+    .intro-note code {
+      display: block;
+      margin: 0;
+      color: var(--intro-ink);
+      font-size: 12px;
+      font-weight: 570;
+      letter-spacing: -0.025em;
+      line-height: 1.35;
+    }
+
+    .intro-note code {
+      font-family: "Geist Mono", ui-monospace, monospace;
+      font-size: 10px;
+      font-weight: 500;
+    }
+
+    .intro-visual-lines {
+      display: grid;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .intro-visual-lines i {
+      display: block;
+      width: var(--w);
+      height: 5px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--intro-ink) 17%, transparent);
+    }
+
+    .intro-pin {
+      position: absolute;
+      top: 9px;
+      left: 50%;
+      z-index: 3;
+      width: 18px;
+      height: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 36% 28%, #5a5d64, #24262b 54%, #0e0f12 100%);
+      box-shadow:
+        0 9px 9px -5px rgba(17, 12, 9, 0.55),
+        inset 0 1px 1px rgba(255, 255, 255, 0.28);
+      opacity: 0;
+      transform: translate(-50%, -62px) scale(1.15);
+      transform-origin: 50% 100%;
+      will-change: transform, opacity;
+    }
+
+    .intro-pin::after {
+      position: absolute;
+      top: 13px;
+      left: 50%;
+      width: 8px;
+      height: 10px;
+      border-radius: 3px 3px 5px 5px;
+      background: linear-gradient(to right, #17181c, #303239 48%, #0c0d10);
+      content: "";
+      transform: translateX(-50%);
+    }
+
+    .intro-impact {
+      position: absolute;
+      top: 4px;
+      left: 50%;
+      z-index: 2;
+      width: 29px;
+      height: 29px;
+      border: 1px solid color-mix(in srgb, var(--intro-ink) 25%, transparent);
+      border-radius: 50%;
+      opacity: 0;
+      transform: translateX(-50%) scale(0.45);
+      pointer-events: none;
+    }
+
+    .intro-pending .page {
+      pointer-events: none;
+    }
+
+    .intro-pending .nav,
+    .intro-pending .hero-copy,
+    .intro-pending .visual-shell {
+      animation: none !important;
+      opacity: 0;
+    }
+
+    .intro-pending .key,
+    .intro-pending .saved-toast {
+      animation-play-state: paused !important;
+    }
+
+    .intro-finished .nav,
+    .intro-finished .hero-copy,
+    .intro-finished .visual-shell {
+      animation: none;
+    }
+
+    .intro-pending .ink-stroke {
+      stroke-dashoffset: 1;
+    }
+
+    a,
+    button {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 0;
+      box-shadow: 0 0 0 0.28rem var(--focus-ring);
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    .nav {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      isolation: isolate;
+      overflow: hidden;
+      width: min(980px, calc(100% - 40px));
+      min-height: 58px;
+      padding: 7px 8px 7px 14px;
+      border: 0;
+      border-radius: 999px;
+      --filter-id: url(#nav-liquid-glass-filter);
+      background-color: color-mix(in srgb, var(--nav-glass) 12%, transparent);
+      box-shadow:
+        inset 0 0 0 1px color-mix(in srgb, #fff calc(var(--nav-reflex-light) * 10%), transparent),
+        inset 1.8px 3px 0 -2px color-mix(in srgb, #fff calc(var(--nav-reflex-light) * 90%), transparent),
+        inset -2px -2px 0 -2px color-mix(in srgb, #fff calc(var(--nav-reflex-light) * 80%), transparent),
+        inset -3px -8px 1px -6px color-mix(in srgb, #fff calc(var(--nav-reflex-light) * 60%), transparent),
+        inset -0.3px -1px 4px 0 color-mix(in srgb, #000 calc(var(--nav-reflex-dark) * 12%), transparent),
+        inset -1.5px 2.5px 0 -2px color-mix(in srgb, #000 calc(var(--nav-reflex-dark) * 20%), transparent),
+        inset 0 3px 4px -2px color-mix(in srgb, #000 calc(var(--nav-reflex-dark) * 20%), transparent),
+        inset 2px -6.5px 1px -4px color-mix(in srgb, #000 calc(var(--nav-reflex-dark) * 10%), transparent),
+        0 1px 5px 0 color-mix(in srgb, #000 calc(var(--nav-reflex-dark) * 10%), transparent),
+        0 6px 16px 0 color-mix(in srgb, #000 calc(var(--nav-reflex-dark) * 8%), transparent),
+        0 1.65rem 3.8rem -2.4rem var(--nav-glass-shadow);
+      backdrop-filter: blur(8px) var(--filter-id, url(#nav-liquid-glass-filter)) saturate(var(--nav-saturation));
+      -webkit-backdrop-filter: blur(8px) saturate(var(--nav-saturation));
+      transform: translateX(-50%);
+      animation: nav-in 800ms var(--ease-out) both;
+      transition:
+        background-color 400ms cubic-bezier(1, 0, 0.4, 1),
+        box-shadow 400ms cubic-bezier(1, 0, 0.4, 1);
+    }
+
+    .nav > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav > .glass-surface__filter {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @media (prefers-reduced-transparency: reduce) {
+      .nav {
+        background: color-mix(in srgb, var(--panel-solid) 94%, transparent);
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+      }
+
+    }
+
+    @keyframes nav-in {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -18px) scale(0.97);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0) scale(1);
+      }
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 650;
+      letter-spacing: -0.025em;
+    }
+
+    .brand img {
+      display: block;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+    }
+
+    .theme-toggle {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      margin-left: auto;
+      border: 0;
+      border-radius: 999px;
+      background-color: color-mix(in srgb, var(--nav-glass) 36%, transparent);
+      color: var(--ink);
+      box-shadow:
+        inset 0 0 0 1px color-mix(in srgb, #fff calc(var(--nav-reflex-light) * 10%), transparent),
+        inset 2px 1px 0 -1px color-mix(in srgb, #fff calc(var(--nav-reflex-light) * 90%), transparent),
+        inset -1.5px -1px 0 -1px color-mix(in srgb, #fff calc(var(--nav-reflex-light) * 80%), transparent),
+        inset -2px -6px 1px -5px color-mix(in srgb, #fff calc(var(--nav-reflex-light) * 60%), transparent),
+        inset -1px 2px 3px -1px color-mix(in srgb, #000 calc(var(--nav-reflex-dark) * 20%), transparent),
+        inset 0 -4px 1px -2px color-mix(in srgb, #000 calc(var(--nav-reflex-dark) * 10%), transparent),
+        0 3px 6px 0 color-mix(in srgb, #000 calc(var(--nav-reflex-dark) * 8%), transparent);
+      cursor: pointer;
+      transition:
+        background-color 400ms cubic-bezier(1, 0, 0.4, 1),
+        box-shadow 400ms cubic-bezier(1, 0, 0.4, 1),
+        transform 600ms var(--ease-spring);
+    }
+
+    .theme-toggle:hover {
+      transform: rotate(8deg) scale(1.04);
+    }
+
+    .theme-toggle:active {
+      transform: scale(0.94);
+    }
+
+    .theme-toggle .ph {
+      position: absolute;
+      inset: 11px;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      line-height: 1;
+      transition:
+        opacity 500ms var(--ease-out),
+        transform 700ms var(--ease-spring);
+    }
+
+    .theme-toggle .sun {
+      opacity: 0;
+      transform: rotate(-28deg) scale(0.65);
+    }
+
+    :root[data-theme="dark"] .theme-toggle .sun {
+      opacity: 1;
+      transform: rotate(0) scale(1);
+    }
+
+    :root[data-theme="dark"] .theme-toggle .moon {
+      opacity: 0;
+      transform: rotate(28deg) scale(0.65);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) .theme-toggle .sun {
+        opacity: 1;
+        transform: rotate(0) scale(1);
+      }
+
+      :root:not([data-theme="light"]) .theme-toggle .moon {
+        opacity: 0;
+        transform: rotate(28deg) scale(0.65);
+      }
+    }
+
+    .button {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      isolation: isolate;
+      gap: 13px;
+      min-height: 45px;
+      overflow: hidden;
+      padding: 6px 7px 6px 19px;
+      border: 0;
+      border-radius: 999px;
+      background: var(--ink);
+      color: var(--paper);
+      box-shadow: 0 1.1rem 2.8rem -1.7rem color-mix(in srgb, var(--ink) 60%, transparent);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+      transition:
+        opacity 550ms var(--ease-spring),
+        transform 550ms var(--ease-spring);
+    }
+
+    .button:hover {
+      transform: translateY(-2px) scale(1.012);
+    }
+
+    .button:active {
+      transform: scale(0.98);
+    }
+
+    .button--disabled {
+      cursor: default;
+    }
+
+    .button--disabled:hover,
+    .button--disabled:active {
+      transform: none;
+    }
+
+    .button--disabled:hover .button-orb {
+      transform: none;
+    }
+
+    .button-hyperspace {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 220ms var(--ease-out);
+    }
+
+    .button.is-hyperspace-active .button-hyperspace {
+      opacity: 1;
+    }
+
+    .button-label,
+    .button-orb {
+      position: relative;
+      z-index: 1;
+    }
+
+    .button-orb {
+      display: grid;
+      width: 33px;
+      height: 33px;
+      place-items: center;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--paper) 14%, transparent);
+      transition: transform 650ms var(--ease-spring);
+    }
+
+    .button:hover .button-orb {
+      transform: translate(3px, -2px) scale(1.06);
+    }
+
+    .button-orb .ph {
+      font-size: 15px;
+      line-height: 1;
+    }
+
+    .nav .button {
+      margin-left: 5px;
+    }
+
+    .hero {
+      width: 100%;
+      height: 100dvh;
+      padding: 98px 32px 22px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.98fr) minmax(420px, 0.92fr);
+      align-items: end;
+      width: min(1240px, 100%);
+      height: 100%;
+      max-height: 720px;
+      margin-inline: auto;
+      gap: clamp(40px, 4.6vw, 72px);
+    }
+
+    .hero-copy {
+      position: relative;
+      z-index: 2;
+      min-width: 0;
+      animation: copy-in 900ms var(--ease-out) 80ms both;
+    }
+
+    @keyframes copy-in {
+      from {
+        opacity: 0;
+        transform: translateY(32px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h1 {
+      max-width: 700px;
+      margin: 0;
+      font-family: "Reckless", "Newsreader", "Iowan Old Style", "Palatino Linotype", serif;
+      font-size: clamp(3.8rem, 4.9vw, 5.15rem);
+      font-optical-sizing: auto;
+      font-weight: 400;
+      letter-spacing: -0.03em;
+      line-height: 0.95;
+      text-wrap: balance;
+    }
+
+    h1 .slogan-line {
+      display: block;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+
+    h1 .ink-word {
+      display: inline-block;
+      will-change: opacity, transform;
+    }
+
+    h1 .pin-word {
+      position: relative;
+      z-index: 1;
+    }
+
+    .slogan-pin {
+      position: absolute;
+      top: -1.08em;
+      left: -0.96em;
+      z-index: 4;
+      display: block;
+      width: 1em;
+      aspect-ratio: 457 / 512;
+      pointer-events: none;
+      transform: rotate(28deg);
+      transform-origin: 96% 96%;
+      will-change: opacity, transform;
+    }
+
+    .slogan-pin img {
+      display: block;
+      width: 100%;
+      height: auto;
+      filter:
+        drop-shadow(0 0.1em 0.08em rgba(65, 31, 11, 0.2))
+        drop-shadow(0 0.025em 0.02em rgba(32, 20, 12, 0.3));
+      user-select: none;
+    }
+
+    .slogan-pin-impact {
+      position: absolute;
+      top: -0.06em;
+      left: -0.06em;
+      z-index: 3;
+      width: 0.25em;
+      height: 0.25em;
+      border: 1px solid rgba(226, 107, 32, 0.56);
+      border-radius: 50%;
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.45);
+      transform-origin: 50% 50%;
+      will-change: opacity, transform;
+    }
+
+    h1 .ink-accent {
+      position: relative;
+      display: inline-block;
+    }
+
+    h1 .ai-word {
+      color: var(--accent);
+      font-size: 1em;
+      font-style: italic;
+      font-weight: 400;
+      letter-spacing: -0.025em;
+    }
+
+    .ink-underline {
+      position: absolute;
+      right: -0.07em;
+      bottom: -0.1em;
+      left: -0.06em;
+      width: calc(100% + 0.13em);
+      height: 0.2em;
+      overflow: visible;
+      color: var(--accent);
+      pointer-events: none;
+    }
+
+    .ink-stroke {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 1;
+      stroke-dashoffset: 0;
+      vector-effect: non-scaling-stroke;
+      will-change: stroke-dashoffset;
+    }
+
+    .lede {
+      max-width: 610px;
+      margin: 21px 0 0;
+      color: var(--muted);
+      font-size: clamp(1rem, 1.14vw, 1.1rem);
+      letter-spacing: -0.018em;
+      line-height: 1.52;
+      text-wrap: pretty;
+    }
+
+    .lede strong {
+      color: var(--ink-soft);
+      font-weight: 500;
+    }
+
+    .mcp-text {
+      position: relative;
+      display: inline-block;
+      color: var(--accent);
+      font-style: italic;
+      font-weight: 600;
+      letter-spacing: 0.015em;
+      text-decoration-line: underline;
+      text-decoration-color: color-mix(in srgb, var(--accent) 72%, transparent);
+      text-decoration-thickness: 0.08em;
+      text-underline-offset: 0.15em;
+    }
+
+    .mcp-cluster {
+      position: relative;
+      display: inline-block;
+    }
+
+    .mcp-logos {
+      position: absolute;
+      top: calc(100% + 2px);
+      left: 50%;
+      z-index: 32;
+      display: flex;
+      width: max-content;
+      align-items: center;
+      margin: 0;
+      transform: translateX(-50%);
+    }
+
+    .mcp-logo-trigger {
+      position: relative;
+      display: grid;
+      width: 30px;
+      height: 30px;
+      place-items: center;
+    }
+
+    .mcp-logo-trigger + .mcp-logo-trigger {
+      margin-left: -5px;
+    }
+
+    .mcp-logo {
+      display: grid;
+      width: 30px;
+      height: 30px;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--panel);
+      box-shadow: var(--shadow-card);
+      color: color-mix(in srgb, var(--ink) 48%, transparent);
+      transform: rotate(-6deg);
+      transition:
+        opacity 600ms var(--ease-spring),
+        transform 600ms var(--ease-spring);
+    }
+
+    .mcp-logo-trigger + .mcp-logo-trigger .mcp-logo {
+      transform: translateY(3px) rotate(7deg);
+    }
+
+    .mcp-logo-trigger:hover,
+    .mcp-logo-trigger:focus-visible {
+      z-index: 31;
+    }
+
+    .mcp-logo-trigger:hover .mcp-logo,
+    .mcp-logo-trigger:focus-visible .mcp-logo {
+      transform: translateY(-3px) rotate(0deg) scale(1.05);
+    }
+
+    .mcp-logo-trigger + .mcp-logo-trigger:hover .mcp-logo,
+    .mcp-logo-trigger + .mcp-logo-trigger:focus-visible .mcp-logo {
+      transform: translateY(0) rotate(0deg) scale(1.05);
+    }
+
+    .mcp-logo-trigger:focus-visible .mcp-logo {
+      box-shadow:
+        0 0 0 3px var(--focus-ring),
+        var(--shadow-card);
+    }
+
+    .mcp-logo svg {
+      width: 17px;
+      height: 17px;
+      fill: currentColor;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 44px;
+    }
+
+    .shortcuts {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      max-width: 680px;
+      margin-top: 22px;
+    }
+
+    .shortcut {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr;
+      align-content: space-between;
+      min-height: 150px;
+      padding: 20px 19px 21px 20px;
+      gap: 13px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      background: var(--panel);
+      box-shadow: var(--shadow-card);
+      transition: transform 650ms var(--ease-spring);
+    }
+
+    .shortcut:hover {
+      transform: translateY(-4px);
+    }
+
+    .shortcut-copy {
+      align-self: start;
+      min-width: 0;
+      padding-right: 8px;
+    }
+
+    .shortcut-copy strong {
+      display: block;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .shortcut-copy span {
+      display: block;
+      max-width: none;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .keys {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      align-self: end;
+      justify-self: start;
+    }
+
+    .key {
+      display: grid;
+      width: 48px;
+      height: 48px;
+      place-items: center;
+      border: 1px solid var(--key-edge);
+      border-radius: 13px;
+      background: linear-gradient(160deg, var(--key-face), color-mix(in srgb, var(--key-face) 86%, var(--canvas)));
+      box-shadow:
+        0 4px 0 -1px var(--key-shadow),
+        0 0.8rem 1.4rem -1rem color-mix(in srgb, var(--ink) 28%, transparent),
+        inset 0 1px 1px color-mix(in srgb, var(--paper-strong) 82%, transparent);
+      color: var(--ink);
+      font-family: "Geist Mono", ui-monospace, monospace;
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1;
+      animation: key-tap 4.8s var(--ease-spring) infinite;
+      will-change: transform;
+    }
+
+    .key-symbol {
+      font-size: 22.5px;
+    }
+
+    .key-shift > span {
+      display: block;
+      transform: translateY(-1px);
+    }
+
+    .key:nth-child(2) {
+      animation-delay: 110ms;
+    }
+
+    .key:nth-child(3) {
+      animation-delay: 220ms;
+    }
+
+    [data-shortcut="region"] .key {
+      animation-delay: 2.4s;
+    }
+
+    [data-shortcut="region"] .key:nth-child(2) {
+      animation-delay: 2.51s;
+    }
+
+    [data-shortcut="region"] .key:nth-child(3) {
+      animation-delay: 2.62s;
+    }
+
+    @keyframes key-tap {
+      0%,
+      8%,
+      24%,
+      100% {
+        transform: translateY(0);
+      }
+      13%,
+      18% {
+        transform: translateY(4px);
+      }
+    }
+
+    .visual-shell {
+      position: relative;
+      z-index: 1;
+      height: min(590px, calc(100dvh - 124px));
+      min-height: 440px;
+      padding: 7px;
+      border: 1px solid var(--line);
+      border-radius: 38px;
+      background: var(--panel-soft);
+      box-shadow: var(--shadow-panel);
+      animation: visual-in 1s var(--ease-out) 140ms both;
+    }
+
+    @keyframes visual-in {
+      from {
+        opacity: 0;
+        transform: translateY(26px) scale(0.94);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .pinboard {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      border-radius: 31px;
+      background:
+        radial-gradient(circle at 50% 34%, var(--accent-soft), transparent 48%),
+        var(--canvas);
+      box-shadow: inset 0 1px 0 color-mix(in srgb, var(--paper-strong) 74%, transparent);
+      isolation: isolate;
+    }
+
+    .pinboard::before {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      content: "";
+      opacity: 0.32;
+      background-image:
+        linear-gradient(var(--line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--line) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent 82%);
+    }
+
+    .board-bar {
+      position: absolute;
+      top: 17px;
+      right: 17px;
+      left: 17px;
+      z-index: 4;
+      display: flex;
+      align-items: center;
+      min-height: 47px;
+      padding: 7px 8px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--panel);
+      box-shadow: var(--shadow-card);
+    }
+
+    .board-selector {
+      position: relative;
+      min-width: 0;
+    }
+
+    .board-switcher {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      padding: 6px 8px;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--ink-soft);
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+      transition:
+        background 360ms var(--ease-out),
+        color 360ms var(--ease-out);
+    }
+
+    .board-switcher:hover,
+    .board-switcher:focus-visible {
+      background: var(--accent-soft);
+      color: var(--ink);
+      outline: 0;
+    }
+
+    .board-title {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      transition:
+        opacity 180ms var(--ease-out),
+        transform 420ms var(--ease-spring);
+    }
+
+    .board-switcher .ph {
+      flex: 0 0 auto;
+      margin-left: 6px;
+      color: var(--quiet);
+      font-size: 11px;
+      line-height: 1;
+      transition: transform 520ms var(--ease-spring);
+    }
+
+    .board-selector.is-open .board-switcher .ph {
+      transform: rotate(180deg);
+    }
+
+    .board-menu {
+      position: absolute;
+      top: calc(100% + 10px);
+      left: 0;
+      width: 226px;
+      padding: 6px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel-solid);
+      box-shadow: var(--shadow-panel);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-7px) scale(0.97);
+      transform-origin: 24px 0;
+      visibility: hidden;
+      transition:
+        opacity 180ms var(--ease-out),
+        transform 460ms var(--ease-spring),
+        visibility 0s 460ms;
+    }
+
+    .board-selector.is-open .board-menu {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+      visibility: visible;
+      transition-delay: 0s;
+    }
+
+    .board-option {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      width: 100%;
+      gap: 8px;
+      padding: 9px 10px;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 10px;
+      font-weight: 550;
+      text-align: left;
+      cursor: pointer;
+      transition:
+        background 320ms var(--ease-out),
+        color 320ms var(--ease-out);
+    }
+
+    .board-option:hover,
+    .board-option:focus-visible {
+      background: var(--panel-soft);
+      color: var(--ink);
+      outline: 0;
+    }
+
+    .board-option[aria-selected="true"] {
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+    }
+
+    .board-option .ph {
+      font-size: 11px;
+      opacity: 0;
+      transform: scale(0.7);
+      transition:
+        opacity 260ms var(--ease-out),
+        transform 420ms var(--ease-spring);
+    }
+
+    .board-option[aria-selected="true"] .ph {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .board-count {
+      margin-left: auto;
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+      font-family: "Geist Mono", ui-monospace, monospace;
+      font-size: 9px;
+      transition:
+        opacity 180ms var(--ease-out),
+        transform 420ms var(--ease-spring);
+    }
+
+    .pinboard.is-switching .board-title,
+    .pinboard.is-switching .board-count {
+      opacity: 0;
+      transform: translateY(5px);
+    }
+
+    .note {
+      position: absolute;
+      padding: 20px;
+      border-radius: 18px;
+      color: var(--ink);
+      box-shadow: var(--shadow-card);
+      transform-origin: 50% 108%;
+      transition: transform 700ms var(--ease-spring);
+    }
+
+    .note-content {
+      transition:
+        opacity 220ms var(--ease-out),
+        transform 520ms var(--ease-spring);
+    }
+
+    .note-table .note-content {
+      transition-delay: 35ms;
+    }
+
+    .note-shot .note-content {
+      transition-delay: 70ms;
+    }
+
+    .note-code .note-content {
+      transition-delay: 105ms;
+    }
+
+    .pinboard.is-switching .note-content {
+      opacity: 0;
+      transform: translateY(9px) scale(0.97);
+      transition-delay: 0ms;
+      transition-duration: 180ms;
+    }
+
+    .note:hover {
+      transform: translateY(-7px) rotate(0deg) scale(1.025);
+    }
+
+    .note::after {
+      position: absolute;
+      top: 11px;
+      left: 50%;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--ink);
+      box-shadow: 0 3px 7px color-mix(in srgb, var(--ink) 32%, transparent);
+      content: "";
+      transform: translateX(-50%);
+    }
+
+    .note small {
+      display: block;
+      margin-bottom: 10px;
+      color: color-mix(in srgb, var(--ink) 58%, transparent);
+      font-family: "Geist Mono", ui-monospace, monospace;
+      font-size: 8px;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .note p {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 520;
+      letter-spacing: -0.02em;
+      line-height: 1.4;
+    }
+
+    .mcp-demo-note {
+      position: absolute;
+      top: calc(100% + 2px);
+      left: -18px;
+      z-index: 31;
+      display: block;
+      width: min(300px, calc(100vw - 32px));
+      height: 92px;
+      padding:
+        14px
+        var(--mcp-note-padding-right, 18px)
+        14px
+        var(--mcp-note-padding-left, 78px);
+      box-sizing: border-box;
+      border: 1px solid var(--line-strong);
+      border-radius: 5px 8px 6px 7px;
+      background:
+        radial-gradient(circle at 16% 14%, var(--mcp-note-sheen), transparent 34%),
+        var(--note-cream);
+      box-shadow: var(--shadow-card);
+      color: var(--ink);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(var(--mcp-note-shift, 0px)) rotate(-1.5deg);
+      transform-origin: 24px 50%;
+    }
+
+    .mcp-demo-note.is-visible {
+      opacity: 1;
+    }
+
+    .mcp-demo-copy {
+      display: block;
+      color: var(--ink);
+      font-family: "Geist", "Avenir Next", ui-sans-serif, system-ui, sans-serif;
+      font-size: 15px;
+      font-style: normal;
+      font-weight: 610;
+      letter-spacing: -0.026em;
+      line-height: 1.35;
+      text-decoration: none;
+    }
+
+    .mcp-demo-prompt {
+      display: inline;
+      transition:
+        opacity 180ms var(--ease-out),
+        transform 240ms var(--ease-out);
+    }
+
+    .mcp-demo-topic {
+      color: var(--accent-strong);
+      font-weight: 700;
+      text-decoration-line: underline;
+      text-decoration-color: color-mix(in srgb, var(--accent) 62%, transparent);
+      text-decoration-thickness: 0.08em;
+      text-underline-offset: 0.14em;
+    }
+
+    .mcp-demo-note.is-switching .mcp-demo-prompt {
+      opacity: 0;
+      transform: translateY(2px);
+    }
+
+    .note-copy {
+      top: 91px;
+      left: 24px;
+      width: 52%;
+      min-height: 142px;
+      background: var(--note-cream);
+      transform: rotate(-3.5deg);
+    }
+
+    .note-table {
+      top: 150px;
+      right: 22px;
+      width: 45%;
+      min-height: 166px;
+      background: var(--note-mint);
+      transform: rotate(3deg);
+    }
+
+    .note-shot {
+      bottom: 45px;
+      left: 35px;
+      width: 54%;
+      min-height: 176px;
+      background: var(--note-blue);
+      transform: rotate(2deg);
+    }
+
+    .note-code {
+      right: 25px;
+      bottom: 26px;
+      width: 43%;
+      min-height: 149px;
+      background: var(--note-lilac);
+      transform: rotate(-4deg);
+    }
+
+    .mini-table {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 0.8fr;
+      gap: 1px;
+      overflow: hidden;
+      margin-top: 11px;
+      border-radius: 7px;
+      background: color-mix(in srgb, var(--ink) 14%, transparent);
+    }
+
+    .mini-table i {
+      height: 18px;
+      background: color-mix(in srgb, var(--note-mint) 82%, var(--paper-strong));
+    }
+
+    .mini-table i:nth-child(-n + 3) {
+      height: 15px;
+      background: color-mix(in srgb, var(--ink) 7%, var(--note-mint));
+    }
+
+    .mini-shot {
+      position: relative;
+      height: 82px;
+      overflow: hidden;
+      margin-top: 10px;
+      border-radius: 9px;
+      background:
+        radial-gradient(circle at 76% 25%, var(--accent-soft), transparent 40%),
+        var(--paper-strong);
+      box-shadow: inset 0 0 0 1px var(--line);
+    }
+
+    .mini-shot::before,
+    .mini-shot::after {
+      position: absolute;
+      left: 11px;
+      border-radius: 999px;
+      background: var(--line-strong);
+      content: "";
+    }
+
+    .mini-shot::before {
+      top: 14px;
+      width: 62%;
+      height: 7px;
+    }
+
+    .mini-shot::after {
+      top: 31px;
+      width: 42%;
+      height: 5px;
+      box-shadow:
+        0 14px 0 var(--line),
+        0 28px 0 var(--line);
+    }
+
+    .code-lines {
+      display: grid;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .code-lines i {
+      width: var(--w);
+      height: 5px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--ink) 24%, transparent);
+    }
+
+    .saved-toast {
+      position: absolute;
+      left: 50%;
+      bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px 8px 8px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--panel);
+      box-shadow: var(--shadow-card);
+      color: var(--ink-soft);
+      font-size: 10px;
+      font-weight: 550;
+      opacity: 0;
+      transform: translate(-50%, 12px) scale(0.94);
+      animation: saved 7s var(--ease-spring) infinite;
+    }
+
+    .saved-toast span {
+      display: grid;
+      width: 21px;
+      height: 21px;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+    }
+
+    .saved-toast .ph {
+      font-size: 12px;
+      line-height: 1;
+    }
+
+    @keyframes saved {
+      0%,
+      58%,
+      100% {
+        opacity: 0;
+        transform: translate(-50%, 12px) scale(0.94);
+      }
+      66%,
+      88% {
+        opacity: 1;
+        transform: translate(-50%, 0) scale(1);
+      }
+    }
+
+    @media (max-width: 1080px) {
+      .hero-grid {
+        grid-template-columns: minmax(0, 1fr) minmax(360px, 0.78fr);
+        gap: 36px;
+      }
+
+      .shortcut {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .nav {
+        top: 13px;
+        width: calc(100% - 24px);
+      }
+
+      .hero {
+        padding: 84px 16px 12px;
+      }
+
+      .hero-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto minmax(140px, 1fr);
+        align-items: stretch;
+        max-height: none;
+        gap: 14px;
+      }
+
+      h1 {
+        max-width: 720px;
+        font-size: clamp(3.2rem, 7.6vw, 4.25rem);
+      }
+
+      .slogan-pin {
+        top: -0.88em;
+        left: -0.79em;
+        width: 0.82em;
+      }
+
+      .lede {
+        max-width: 700px;
+        margin-top: 16px;
+        font-size: 0.92rem;
+      }
+
+      .hero-actions {
+        margin-top: 15px;
+      }
+
+      .shortcuts {
+        max-width: none;
+        margin-top: 17px;
+      }
+
+      .shortcut {
+        grid-template-columns: minmax(0, 1fr) auto;
+        min-height: 106px;
+        padding: 14px 15px 16px 16px;
+        border-radius: 21px;
+      }
+
+      .shortcut-copy span {
+        max-width: 190px;
+      }
+
+      .visual-shell {
+        width: 100%;
+        height: auto;
+        min-height: 0;
+        border-radius: 26px;
+      }
+
+      .pinboard {
+        border-radius: 20px;
+      }
+
+      .board-bar {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        min-height: 38px;
+        border-radius: 12px;
+      }
+
+      .note {
+        padding: 14px;
+        border-radius: 13px;
+      }
+
+      .note small {
+        margin-bottom: 6px;
+        font-size: 6px;
+      }
+
+      .note p {
+        font-size: 10px;
+      }
+
+      .mcp-demo-note {
+        left: -14px;
+        width: calc(100vw - 28px);
+        max-width: none;
+        padding:
+          11px
+          var(--mcp-note-padding-right, 16px)
+          11px
+          var(--mcp-note-padding-left, 108px);
+      }
+
+      .mcp-demo-copy {
+        font-size: 13px;
+        line-height: 1.3;
+      }
+
+      .note-copy {
+        top: 62px;
+        left: 19px;
+        width: 42%;
+        min-height: 84px;
+      }
+
+      .note-table {
+        top: 72px;
+        right: 20px;
+        width: 37%;
+        min-height: 91px;
+      }
+
+      .note-shot {
+        bottom: 12px;
+        left: 28%;
+        width: 42%;
+        min-height: 80px;
+      }
+
+      .note-code {
+        display: none;
+      }
+
+      .mini-table i {
+        height: 8px;
+      }
+
+      .mini-table i:nth-child(-n + 3) {
+        height: 7px;
+      }
+
+      .mini-shot {
+        height: 36px;
+        margin-top: 5px;
+      }
+
+      .mini-shot::before {
+        top: 8px;
+        height: 4px;
+      }
+
+      .mini-shot::after {
+        top: 17px;
+        height: 3px;
+        box-shadow: 0 8px 0 var(--line);
+      }
+
+      .saved-toast {
+        display: none;
+      }
+    }
+
+    @media (max-width: 560px) {
+      html,
+      body {
+        height: auto;
+        min-height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+
+      body {
+        min-height: 100dvh;
+      }
+
+      .page {
+        height: auto;
+        min-height: 100dvh;
+        overflow: visible;
+      }
+
+      .intro-stage {
+        width: calc(100vw - 30px);
+      }
+
+      .intro-board-shell {
+        padding: 7px;
+        border-radius: 28px;
+        aspect-ratio: 1.08 / 1;
+      }
+
+      .intro-board {
+        border-radius: 22px;
+      }
+
+      .intro-note {
+        min-height: 96px;
+        padding: 29px 12px 12px;
+        border-radius: 12px;
+      }
+
+      .intro-note--quote {
+        top: 9%;
+        left: 7%;
+        width: 47%;
+      }
+
+      .intro-note--visual {
+        top: 14%;
+        right: 6%;
+        width: 38%;
+      }
+
+      .intro-note--code {
+        bottom: 8%;
+        left: 22%;
+        width: 56%;
+      }
+
+      .intro-note p {
+        font-size: 10px;
+      }
+
+      .intro-note code {
+        font-size: 8px;
+      }
+
+      .intro-pin {
+        width: 16px;
+        height: 16px;
+      }
+
+      .brand span {
+        display: none;
+      }
+
+      .nav {
+        min-height: 54px;
+      }
+
+      .nav .button {
+        width: 40px;
+        min-height: 40px;
+        padding: 0;
+      }
+
+      .nav .button-label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+      }
+
+      .nav .button-orb {
+        width: 32px;
+        height: 32px;
+      }
+
+      .hero {
+        height: auto;
+        min-height: 100dvh;
+        padding: 92px 16px 48px;
+      }
+
+      .hero-grid {
+        grid-template-rows: auto auto;
+        height: auto;
+        gap: 34px;
+      }
+
+      h1 {
+        font-size: clamp(2.55rem, 11.6vw, 3.3rem);
+        line-height: 0.95;
+      }
+
+      .slogan-pin {
+        top: -0.67em;
+        left: -0.6em;
+        width: 0.62em;
+      }
+
+      .lede {
+        margin-top: 24px;
+        font-size: 0.92rem;
+        line-height: 1.55;
+      }
+
+      .hero-actions {
+        margin-top: 112px;
+        align-items: flex-start;
+        gap: 10px;
+        flex-direction: column;
+      }
+
+      .mcp-logo {
+        width: 28px;
+        height: 28px;
+        border-radius: 9px;
+      }
+
+      .mcp-logo-trigger {
+        width: 28px;
+        height: 28px;
+      }
+
+      .mcp-logo svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      .button {
+        width: 100%;
+        min-height: 48px;
+      }
+
+      .shortcuts {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        margin-top: 28px;
+      }
+
+      .shortcut {
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-content: center;
+        align-items: center;
+        min-height: 104px;
+        padding: 17px 18px;
+        gap: 14px;
+        border-radius: 24px;
+      }
+
+      .shortcut-copy strong {
+        font-size: 13px;
+      }
+
+      .shortcut-copy span {
+        display: block;
+        max-width: 180px;
+        margin-top: 4px;
+        font-size: 11px;
+        line-height: 1.35;
+      }
+
+      .keys {
+        gap: 5px;
+      }
+
+      .key {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        font-size: 12px;
+      }
+
+      .key-symbol {
+        font-size: 16.5px;
+      }
+
+      .visual-shell {
+        height: 460px;
+        min-height: 460px;
+        padding: 6px;
+        border-radius: 30px;
+      }
+
+      .pinboard {
+        border-radius: 24px;
+      }
+
+      .note-copy {
+        top: 68px;
+        left: 16px;
+        width: 47%;
+        min-height: 112px;
+      }
+
+      .note-table {
+        top: 110px;
+        right: 14px;
+        width: 43%;
+        min-height: 118px;
+      }
+
+      .note-shot {
+        bottom: 38px;
+        left: 16px;
+        width: 50%;
+        min-height: 126px;
+      }
+
+      .note-code {
+        right: 14px;
+        bottom: 22px;
+        display: block;
+        width: 45%;
+        min-height: 112px;
+      }
+
+      .code-lines {
+        margin-top: 8px;
+      }
+
+      .code-lines i {
+        height: 4px;
+        margin-top: 4px;
+      }
+
+    }
+
+    @media (max-width: 360px) {
+      .shortcut {
+        grid-template-columns: 1fr;
+        align-content: space-between;
+        min-height: 128px;
+      }
+
+      .shortcut-copy span {
+        max-width: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .button-hyperspace {
+        display: none;
+      }
+    }
+
+    @media (min-width: 561px) and (max-width: 860px) and (max-height: 740px) {
+      .hero-grid {
+        grid-template-rows: 1fr;
+      }
+
+      .visual-shell {
+        display: none;
+      }
+
+      .lede {
+        max-width: 620px;
+      }
+    }
+
+    @media (max-height: 700px) and (min-width: 861px) {
+      .hero {
+        padding-top: 88px;
+        padding-bottom: 12px;
+      }
+
+      .hero-grid {
+        max-height: 600px;
+      }
+
+      h1 {
+        font-size: clamp(3.25rem, 4.5vw, 4.5rem);
+      }
+
+      .lede {
+        margin-top: 18px;
+      }
+
+      .hero-actions {
+        margin-top: 18px;
+      }
+
+      .shortcuts {
+        margin-top: 19px;
+      }
+
+      .shortcut {
+        min-height: 118px;
+      }
+
+      .visual-shell {
+        height: calc(100dvh - 105px);
+        min-height: 390px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 1ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="ambient-art ambient-art--light" aria-hidden="true"></div>
+  <div class="ambient-art ambient-art--dark" aria-hidden="true"></div>
+  <div class="liquid-glass-veil" aria-hidden="true"></div>
+
+  <div class="intro-screen" aria-hidden="true">
+    <div class="intro-stage">
+      <div class="intro-board-shell">
+        <div class="intro-board">
+          <article class="intro-note intro-note--quote" data-intro-x="-42" data-intro-y="22" data-intro-rotation="-11">
+            <span class="intro-impact"></span>
+            <span class="intro-pin"></span>
+            <small>Exact wording</small>
+            <p>“Keep this thought for later.”</p>
+          </article>
+
+          <article class="intro-note intro-note--visual" data-intro-x="38" data-intro-y="18" data-intro-rotation="10">
+            <span class="intro-impact"></span>
+            <span class="intro-pin"></span>
+            <small>Visual reference</small>
+            <p>The layout to remember</p>
+            <span class="intro-visual-lines" aria-hidden="true">
+              <i style="--w: 82%"></i>
+              <i style="--w: 58%"></i>
+            </span>
+          </article>
+
+          <article class="intro-note intro-note--code" data-intro-x="0" data-intro-y="36" data-intro-rotation="-7">
+            <span class="intro-impact"></span>
+            <span class="intro-pin"></span>
+            <small>Working snippet</small>
+            <code>const idea = saved;</code>
+          </article>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="page">
+    <nav class="nav" aria-label="Primary navigation">
+      <svg class="glass-surface__filter" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+        <defs>
+          <filter id="nav-liquid-glass-filter" color-interpolation-filters="sRGB" x="0%" y="0%" width="100%" height="100%">
+            <feImage
+              x="0"
+              y="0"
+              width="100%"
+              height="100%"
+              preserveAspectRatio="none"
+              result="map"
+              href="assets/liquid-glass-map.png"
+            />
+            <feDisplacementMap in="SourceGraphic" in2="map" result="dispRed" scale="-20" xChannelSelector="R" yChannelSelector="G" />
+            <feColorMatrix in="dispRed" type="matrix" values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0" result="red" />
+            <feDisplacementMap in="SourceGraphic" in2="map" result="dispGreen" scale="-24" xChannelSelector="R" yChannelSelector="G" />
+            <feColorMatrix in="dispGreen" type="matrix" values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 0" result="green" />
+            <feDisplacementMap in="SourceGraphic" in2="map" result="dispBlue" scale="-28" xChannelSelector="R" yChannelSelector="G" />
+            <feColorMatrix in="dispBlue" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0" result="blue" />
+            <feBlend in="red" in2="green" mode="screen" result="rg" />
+            <feBlend in="rg" in2="blue" mode="screen" result="output" />
+            <feGaussianBlur in="output" stdDeviation="3" />
+          </filter>
+        </defs>
+      </svg>
+      <a class="brand" href="#" aria-label="Pin It home">
+        <img src="assets/icon.svg" alt="" />
+        <span>Pin It</span>
+      </a>
+      <button class="theme-toggle" type="button" aria-label="Switch to dark mode">
+        <i class="ph ph-moon moon" aria-hidden="true"></i>
+        <i class="ph ph-sun sun" aria-hidden="true"></i>
+      </button>
+      <a
+        class="button"
+        href="https://github.com/johnnyzhoujz/pin-it-public"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Star Pin It on GitHub"
+      >
+        <canvas class="button-hyperspace" aria-hidden="true"></canvas>
+        <span class="button-label">Star on GitHub</span>
+        <span class="button-orb" aria-hidden="true">
+          <i class="ph ph-star"></i>
+        </span>
+      </a>
+    </nav>
+
+    <section class="hero">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <h1>
+            <span class="slogan-line">
+              <span class="ink-word pin-word">
+                Pin
+                <span class="slogan-pin" aria-hidden="true">
+                  <img
+                    src="assets/slogan-pushpin.png"
+                    alt=""
+                    width="457"
+                    height="512"
+                    draggable="false"
+                  />
+                </span>
+                <span class="slogan-pin-impact" aria-hidden="true"></span>
+              </span>
+              <span class="ink-word">it,</span>
+              <span class="ink-word">so</span>
+              <span class="ink-word">your</span>
+              <span class="ink-accent">
+                <em class="ai-word ink-word">AI</em>
+                <svg class="ink-underline" viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true">
+                  <path
+                    class="ink-stroke"
+                    pathLength="1"
+                    d="M2 12 C18 7 36 14 54 9 C70 5 86 11 98 7"
+                  />
+                </svg>
+              </span>
+            </span>
+            <span class="slogan-line">
+              <span class="ink-word">can</span>
+              <span class="ink-word">use</span>
+              <span class="ink-word">it</span>
+              <span class="ink-word">later.</span>
+            </span>
+          </h1>
+          <p class="lede">
+            <strong>Pin It is a Mac pinboard for anything you'll want again</strong>: text, tables,
+            code, or screenshots. Pin it once. Bring it into any AI session through
+            <span class="mcp-cluster"><span class="mcp-text" aria-label="MCP">MCP</span><span class="mcp-logos" aria-label="Use Pin It with OpenAI and Anthropic through MCP">
+            <span
+              class="mcp-logo-trigger"
+              aria-label="OpenAI"
+            >
+              <span class="mcp-logo" aria-hidden="true">
+                <svg viewBox="0 0 20 20" aria-hidden="true">
+                  <path d="M11.248 18.25q-.825 0-1.568-.314a4.3 4.3 0 0 1-1.32-.874 4 4 0 0 1-1.304.214 4 4 0 0 1-2.046-.544 4.27 4.27 0 0 1-1.518-1.485 4 4 0 0 1-.56-2.095q0-.48.131-1.04A4.4 4.4 0 0 1 2.04 10.71a4.07 4.07 0 0 1 .017-3.4 4.2 4.2 0 0 1 1.056-1.418 3.8 3.8 0 0 1 1.6-.842 3.9 3.9 0 0 1 .76-1.683q.593-.759 1.451-1.188a4.04 4.04 0 0 1 1.832-.429q.825 0 1.567.313.742.314 1.32.875a4 4 0 0 1 1.304-.215q1.106 0 2.046.545a4.14 4.14 0 0 1 1.501 1.485q.578.941.578 2.095 0 .48-.132 1.04.66.61 1.023 1.419.363.792.363 1.666 0 .892-.38 1.717a4.3 4.3 0 0 1-1.072 1.435 3.8 3.8 0 0 1-1.584.825 3.8 3.8 0 0 1-.775 1.683 4.06 4.06 0 0 1-1.436 1.188 4.04 4.04 0 0 1-1.832.429m-4.076-2.062q.825 0 1.435-.347l3.103-1.782a.36.36 0 0 0 .164-.313v-1.42L7.881 14.62a.67.67 0 0 1-.726 0l-3.118-1.798a.5.5 0 0 1-.017.115v.198q0 .841.396 1.551.413.693 1.139 1.089a3.2 3.2 0 0 0 1.617.412m.165-2.69a.4.4 0 0 0 .181.05q.083 0 .165-.05l1.238-.71-3.977-2.31a.7.7 0 0 1-.363-.643v-3.58q-.825.362-1.32 1.122a2.9 2.9 0 0 0-.495 1.65q0 .809.413 1.55.412.743 1.072 1.123zm3.91 3.663q.875 0 1.585-.396a2.96 2.96 0 0 0 1.534-2.64v-3.564a.32.32 0 0 0-.165-.297l-1.254-.726v4.604a.7.7 0 0 1-.363.643l-3.119 1.799a3 3 0 0 0 1.783.577m.627-6.039V8.878L10.01 7.822 8.129 8.878v2.244l1.881 1.056zM7.057 5.859a.7.7 0 0 1 .363-.644l3.119-1.798a3 3 0 0 0-1.782-.578q-.874 0-1.584.396A2.96 2.96 0 0 0 6.05 4.324a3.07 3.07 0 0 0-.396 1.551v3.547q0 .199.165.314l1.237.726zm8.383 7.887q.825-.364 1.303-1.123.495-.758.495-1.65a3.15 3.15 0 0 0-.412-1.55q-.413-.743-1.073-1.123l-3.086-1.782q-.099-.065-.181-.049a.3.3 0 0 0-.165.05l-1.238.692 3.993 2.327a.6.6 0 0 1 .264.264.64.64 0 0 1 .1.363zm-3.317-8.382a.63.63 0 0 1 .726 0l3.135 1.831v-.297q0-.792-.396-1.501a2.86 2.86 0 0 0-1.105-1.155q-.71-.43-1.65-.43-.825 0-1.436.347L8.294 5.941a.36.36 0 0 0-.165.314v1.418z" />
+                </svg>
+              </span>
+            </span>
+            <span
+              class="mcp-logo-trigger"
+              aria-label="Anthropic Claude"
+            >
+              <span class="mcp-logo" aria-hidden="true">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m4.7144 15.9555 4.7174-2.6471.079-.2307-.079-.1275h-.2307l-.7893-.0486-2.6956-.0729-2.3375-.0971-2.2646-.1214-.5707-.1215-.5343-.7042.0546-.3522.4797-.3218.686.0608 1.5179.1032 2.2767.1578 1.6514.0972 2.4468.255h.3886l.0546-.1579-.1336-.0971-.1032-.0972L6.973 9.8356l-2.55-1.6879-1.3356-.9714-.7225-.4918-.3643-.4614-.1578-1.0078.6557-.7225.8803.0607.2246.0607.8925.686 1.9064 1.4754 2.4893 1.8336.3643.3035.1457-.1032.0182-.0728-.164-.2733-1.3539-2.4467-1.445-2.4893-.6435-1.032-.17-.6194c-.0607-.255-.1032-.4674-.1032-.7285L6.287.1335 6.6997 0l.9957.1336.419.3642.6192 1.4147 1.0018 2.2282 1.5543 3.0296.4553.8985.2429.8318.091.255h.1579v-.1457l.1275-1.706.2368-2.0947.2307-2.6957.0789-.7589.3764-.9107.7468-.4918.5828.2793.4797.686-.0668.4433-.2853 1.8517-.5586 2.9021-.3643 1.9429h.2125l.2429-.2429.9835-1.3053 1.6514-2.0643.7286-.8196.85-.9046.5464-.4311h1.0321l.759 1.1293-.34 1.1657-1.0625 1.3478-.8804 1.1414-1.2628 1.7-.7893 1.36.0729.1093.1882-.0183 2.8535-.607 1.5421-.2794 1.8396-.3157.8318.3886.091.3946-.3278.8075-1.967.4857-2.3072.4614-3.4364.8136-.0425.0304.0486.0607 1.5482.1457.6618.0364h1.621l3.0175.2247.7892.522.4736.6376-.079.4857-1.2142.6193-1.6393-.3886-3.825-.9107-1.3113-.3279h-.1822v.1093l1.0929 1.0686 2.0035 1.8092 2.5075 2.3314.1275.5768-.3218.4554-.34-.0486-2.2039-1.6575-.85-.7468-1.9246-1.621h-.1275v.17l.4432.6496 2.3436 3.5214.1214 1.0807-.17.3521-.6071.2125-.6679-.1214-1.3721-1.9246L14.38 17.959l-1.1414-1.9428-.1397.079-.674 7.2552-.3156.3703-.7286.2793-.6071-.4614-.3218-.7468.3218-1.4753.3886-1.9246.3157-1.53.2853-1.9004.17-.6314-.0121-.0425-.1397.0182-1.4328 1.9672-2.1796 2.9446-1.7243 1.8456-.4128.164-.7164-.3704.0667-.6618.4008-.5889 2.386-3.0357 1.4389-1.882.929-1.0868-.0062-.1579h-.0546l-6.3385 4.1164-1.1293.1457-.4857-.4554.0608-.7467.2307-.2429 1.9064-1.3114Z" />
+                </svg>
+              </span>
+            </span>
+          </span><span class="mcp-demo-note" role="note">
+            <span class="mcp-demo-copy">Just ask: “<span class="mcp-demo-prompt" aria-live="polite"><span class="mcp-demo-action">What did I pin in </span><span class="mcp-demo-topic">Pins worth coming back to</span><span class="mcp-demo-tail">?</span></span>”</span>
+          </span></span>.
+          </p>
+          <div class="hero-actions">
+            <a class="button" href="download.html" aria-label="Choose a Pin It download for your Mac">
+              <canvas class="button-hyperspace" aria-hidden="true"></canvas>
+              <span class="button-label">Download for Mac</span>
+              <span class="button-orb" aria-hidden="true">
+                <i class="ph ph-download-simple"></i>
+              </span>
+            </a>
+          </div>
+
+          <div class="shortcuts" aria-label="Pin It capture shortcuts">
+            <article class="shortcut" data-shortcut="clipboard">
+              <div class="shortcut-copy">
+                <strong>Pin what you just copied</strong>
+                <span>Text, code, links, and tables</span>
+              </div>
+              <div class="keys" aria-label="Command Shift I">
+                <kbd class="key key-symbol" aria-label="Command">⌘</kbd>
+                <kbd class="key key-symbol key-shift" aria-label="Shift"><span aria-hidden="true">⇧</span></kbd>
+                <kbd class="key">I</kbd>
+              </div>
+            </article>
+
+            <article class="shortcut" data-shortcut="region">
+              <div class="shortcut-copy">
+                <strong>Pin a screen region</strong>
+                <span>Charts, layouts, and visual details</span>
+              </div>
+              <div class="keys" aria-label="Command Shift O">
+                <kbd class="key key-symbol" aria-label="Command">⌘</kbd>
+                <kbd class="key key-symbol key-shift" aria-label="Shift"><span aria-hidden="true">⇧</span></kbd>
+                <kbd class="key">O</kbd>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="visual-shell" aria-label="A Pin It board with saved text, table, screenshot, and code pins">
+          <div class="pinboard">
+            <div class="board-bar">
+              <div class="board-selector">
+                <button
+                  class="board-switcher"
+                  type="button"
+                  aria-haspopup="listbox"
+                  aria-expanded="false"
+                  aria-controls="board-menu"
+                >
+                  <span class="board-title">Pins worth coming back to</span>
+                  <i class="ph ph-caret-down" aria-hidden="true"></i>
+                </button>
+                <div class="board-menu" id="board-menu" role="listbox" aria-label="Choose a pinboard">
+                  <button class="board-option" type="button" role="option" aria-selected="true" data-board-index="0">
+                    <span>Pins worth coming back to</span>
+                    <i class="ph ph-check" aria-hidden="true"></i>
+                  </button>
+                  <button class="board-option" type="button" role="option" aria-selected="false" data-board-index="1">
+                    <span>Launch research</span>
+                    <i class="ph ph-check" aria-hidden="true"></i>
+                  </button>
+                  <button class="board-option" type="button" role="option" aria-selected="false" data-board-index="2">
+                    <span>Design references</span>
+                    <i class="ph ph-check" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+              <span class="board-count">12 saved</span>
+            </div>
+
+            <article class="note note-copy">
+              <div class="note-content">
+                <small>Exact wording</small>
+                <p>“Make the handoff feel like continuing the same thought.”</p>
+              </div>
+            </article>
+
+            <article class="note note-table">
+              <div class="note-content">
+                <small>Comparison</small>
+                <p>Models by task</p>
+                <div class="mini-table" aria-hidden="true">
+                  <i></i><i></i><i></i>
+                  <i></i><i></i><i></i>
+                  <i></i><i></i><i></i>
+                </div>
+              </div>
+            </article>
+
+            <article class="note note-shot">
+              <div class="note-content">
+                <small>Screen region</small>
+                <p>The interaction to reference</p>
+                <div class="mini-shot" aria-hidden="true"></div>
+              </div>
+            </article>
+
+            <article class="note note-code">
+              <div class="note-content">
+                <small>Useful snippet</small>
+                <p>Keep the working version</p>
+                <div class="code-lines" aria-hidden="true">
+                  <i style="--w: 82%"></i>
+                  <i style="--w: 61%"></i>
+                  <i style="--w: 72%"></i>
+                  <i style="--w: 45%"></i>
+                </div>
+              </div>
+            </article>
+
+            <div class="saved-toast" aria-hidden="true">
+              <span>
+                <i class="ph ph-check"></i>
+              </span>
+              Pinned
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/gsap.min.js"></script>
+  <script>
+    const themeToggle = document.querySelector(".theme-toggle");
+    const systemTheme = window.matchMedia("(prefers-color-scheme: dark)");
+
+    function activeTheme() {
+      return document.documentElement.dataset.theme || (systemTheme.matches ? "dark" : "light");
+    }
+
+    function updateThemeLabel() {
+      const nextTheme = activeTheme() === "dark" ? "light" : "dark";
+      themeToggle.setAttribute("aria-label", `Switch to ${nextTheme} mode`);
+    }
+
+    themeToggle.addEventListener("click", () => {
+      const nextTheme = activeTheme() === "dark" ? "light" : "dark";
+      document.documentElement.dataset.theme = nextTheme;
+      localStorage.setItem("pin-it-marketing-theme", nextTheme);
+      updateThemeLabel();
+      syncHyperspaceThemes();
+    });
+
+    systemTheme.addEventListener("change", () => {
+      updateThemeLabel();
+      syncHyperspaceThemes();
+    });
+    updateThemeLabel();
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const finePointer = window.matchMedia("(pointer: fine)");
+    const ambientArtLayers = Array.from(document.querySelectorAll(".ambient-art"));
+    let ambientTargetX = 0;
+    let ambientTargetY = 0;
+    let ambientCurrentX = 0;
+    let ambientCurrentY = 0;
+    let ambientTiltFrame = 0;
+
+    function paintAmbientTilt() {
+      const shiftX = ambientCurrentX * 9;
+      const shiftY = ambientCurrentY * 6.5;
+      const tiltX = ambientCurrentY * -1.6;
+      const tiltY = ambientCurrentX * 1.6;
+
+      ambientArtLayers.forEach((layer) => {
+        layer.style.setProperty("--ambient-shift-x", `${shiftX.toFixed(2)}px`);
+        layer.style.setProperty("--ambient-shift-y", `${shiftY.toFixed(2)}px`);
+        layer.style.setProperty("--ambient-tilt-x", `${tiltX.toFixed(3)}deg`);
+        layer.style.setProperty("--ambient-tilt-y", `${tiltY.toFixed(3)}deg`);
+      });
+    }
+
+    function animateAmbientTilt() {
+      const smoothing = 0.095;
+      ambientCurrentX += (ambientTargetX - ambientCurrentX) * smoothing;
+      ambientCurrentY += (ambientTargetY - ambientCurrentY) * smoothing;
+      paintAmbientTilt();
+
+      const isSettled =
+        Math.abs(ambientTargetX - ambientCurrentX) < 0.001 &&
+        Math.abs(ambientTargetY - ambientCurrentY) < 0.001;
+
+      if (isSettled) {
+        ambientCurrentX = ambientTargetX;
+        ambientCurrentY = ambientTargetY;
+        paintAmbientTilt();
+        ambientTiltFrame = 0;
+        ambientArtLayers.forEach((layer) => layer.style.removeProperty("will-change"));
+        return;
+      }
+
+      ambientTiltFrame = requestAnimationFrame(animateAmbientTilt);
+    }
+
+    function scheduleAmbientTilt() {
+      if (ambientTiltFrame) return;
+      ambientArtLayers.forEach((layer) => layer.style.setProperty("will-change", "transform"));
+      ambientTiltFrame = requestAnimationFrame(animateAmbientTilt);
+    }
+
+    function resetAmbientTilt(immediate = false) {
+      ambientTargetX = 0;
+      ambientTargetY = 0;
+
+      if (!immediate) {
+        scheduleAmbientTilt();
+        return;
+      }
+
+      cancelAnimationFrame(ambientTiltFrame);
+      ambientTiltFrame = 0;
+      ambientCurrentX = 0;
+      ambientCurrentY = 0;
+      paintAmbientTilt();
+      ambientArtLayers.forEach((layer) => layer.style.removeProperty("will-change"));
+    }
+
+    window.addEventListener(
+      "pointermove",
+      (event) => {
+        if (!finePointer.matches || reducedMotion.matches) return;
+
+        ambientTargetX = Math.max(-1, Math.min(1, (event.clientX / window.innerWidth - 0.5) * 2));
+        ambientTargetY = Math.max(-1, Math.min(1, (event.clientY / window.innerHeight - 0.5) * 2));
+        scheduleAmbientTilt();
+      },
+      { passive: true }
+    );
+    document.documentElement.addEventListener("mouseleave", () => resetAmbientTilt());
+    window.addEventListener("blur", () => resetAmbientTilt());
+    finePointer.addEventListener("change", (event) => {
+      if (!event.matches) resetAmbientTilt(true);
+    });
+    reducedMotion.addEventListener("change", (event) => {
+      if (event.matches) resetAmbientTilt(true);
+    });
+
+    const MAX_PARTICLE_DEPTH = 2.35;
+    const MIN_PARTICLE_DEPTH = 0.08;
+
+    class HyperspaceButton {
+      constructor(button) {
+        this.button = button;
+        this.canvas = button.querySelector(".button-hyperspace");
+        this.context = this.canvas.getContext("2d");
+        this.particles = [];
+        this.width = 0;
+        this.height = 0;
+        this.centerX = 0;
+        this.centerY = 0;
+        this.starRgb = "255, 255, 255";
+        this.running = false;
+        this.frameRequest = 0;
+        this.fadeTimer = 0;
+        this.lastFrame = 0;
+
+        this.animate = this.animate.bind(this);
+        this.resize = this.resize.bind(this);
+
+        this.button.addEventListener("pointerenter", () => this.start());
+        this.button.addEventListener("pointerleave", () => {
+          if (!this.button.matches(":focus-visible")) this.stop();
+        });
+        this.button.addEventListener("focus", () => this.start());
+        this.button.addEventListener("blur", () => {
+          if (!this.button.matches(":hover")) this.stop();
+        });
+
+        this.resize();
+        this.syncTheme();
+
+        if ("ResizeObserver" in window) {
+          this.resizeObserver = new ResizeObserver(this.resize);
+          this.resizeObserver.observe(this.button);
+        } else {
+          window.addEventListener("resize", this.resize);
+        }
+      }
+
+      syncTheme() {
+        const value = getComputedStyle(this.button).getPropertyValue("--button-star-rgb").trim();
+        this.starRgb = value || "255, 255, 255";
+      }
+
+      resize() {
+        const bounds = this.button.getBoundingClientRect();
+        const width = Math.max(1, bounds.width);
+        const height = Math.max(1, bounds.height);
+
+        if (width === this.width && height === this.height) return;
+
+        const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+        this.width = width;
+        this.height = height;
+        this.centerX = width / 2;
+        this.centerY = height / 2;
+        this.canvas.width = Math.round(width * pixelRatio);
+        this.canvas.height = Math.round(height * pixelRatio);
+        this.context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+
+        const particleCount = Math.min(54, Math.max(24, Math.round(width / 4.5)));
+        this.particles = Array.from({ length: particleCount }, () => this.createParticle(true));
+      }
+
+      createParticle(initial = false) {
+        return {
+          x: Math.random() * this.width,
+          y: Math.random() * this.height,
+          z: initial
+            ? MIN_PARTICLE_DEPTH + Math.random() * (MAX_PARTICLE_DEPTH - MIN_PARTICLE_DEPTH)
+            : MAX_PARTICLE_DEPTH,
+          speed: 0.018 + Math.random() * 0.018
+        };
+      }
+
+      resetParticle(particle) {
+        const next = this.createParticle(false);
+        particle.x = next.x;
+        particle.y = next.y;
+        particle.z = next.z;
+        particle.speed = next.speed;
+      }
+
+      project(particle, depth) {
+        const safeDepth = Math.max(MIN_PARTICLE_DEPTH, depth);
+        return {
+          x: this.centerX + (particle.x - this.centerX) / safeDepth,
+          y: this.centerY + (particle.y - this.centerY) / safeDepth
+        };
+      }
+
+      draw(frameStep) {
+        this.context.clearRect(0, 0, this.width, this.height);
+        this.context.lineCap = "round";
+
+        for (const particle of this.particles) {
+          particle.z -= particle.speed * frameStep;
+
+          const head = this.project(particle, particle.z);
+          const tail = this.project(particle, particle.z + 0.2);
+          const outside =
+            particle.z <= MIN_PARTICLE_DEPTH ||
+            head.x < -8 ||
+            head.x > this.width + 8 ||
+            head.y < -8 ||
+            head.y > this.height + 8;
+
+          if (outside) {
+            this.resetParticle(particle);
+            continue;
+          }
+
+          const proximity = 1 - particle.z / MAX_PARTICLE_DEPTH;
+          const alpha = 0.08 + proximity * 0.42;
+          this.context.beginPath();
+          this.context.strokeStyle = `rgba(${this.starRgb}, ${alpha})`;
+          this.context.lineWidth = 0.55 + proximity * 1.35;
+          this.context.moveTo(tail.x, tail.y);
+          this.context.lineTo(head.x, head.y);
+          this.context.stroke();
+
+          this.context.beginPath();
+          this.context.fillStyle = `rgba(${this.starRgb}, ${Math.min(0.62, alpha + 0.12)})`;
+          this.context.arc(head.x, head.y, 0.45 + proximity * 0.8, 0, Math.PI * 2);
+          this.context.fill();
+        }
+      }
+
+      animate(time) {
+        if (!this.running) return;
+
+        const elapsed = this.lastFrame ? Math.min(32, time - this.lastFrame) : 16.67;
+        this.lastFrame = time;
+        this.draw(elapsed / 16.67);
+        this.frameRequest = requestAnimationFrame(this.animate);
+      }
+
+      start() {
+        if (this.running || reducedMotion.matches) return;
+
+        window.clearTimeout(this.fadeTimer);
+        this.syncTheme();
+        this.running = true;
+        this.lastFrame = 0;
+        this.button.classList.add("is-hyperspace-active");
+        this.frameRequest = requestAnimationFrame(this.animate);
+      }
+
+      stop() {
+        if (!this.running) return;
+
+        this.running = false;
+        cancelAnimationFrame(this.frameRequest);
+        this.button.classList.remove("is-hyperspace-active");
+        this.fadeTimer = window.setTimeout(() => {
+          this.context.clearRect(0, 0, this.width, this.height);
+        }, 240);
+      }
+    }
+
+    const hyperspaceButtons = Array.from(document.querySelectorAll(".button")).map(
+      (button) => new HyperspaceButton(button)
+    );
+
+    function syncHyperspaceThemes() {
+      requestAnimationFrame(() => {
+        hyperspaceButtons.forEach((effect) => effect.syncTheme());
+      });
+    }
+
+    reducedMotion.addEventListener("change", (event) => {
+      if (event.matches) hyperspaceButtons.forEach((effect) => effect.stop());
+    });
+
+    const pinboards = [
+      {
+        title: "Pins worth coming back to",
+        count: "12 saved",
+        prompt: ["What did I pin in ", "?"],
+        pins: [
+          ["Exact wording", "“Make the handoff feel like continuing the same thought.”"],
+          ["Comparison", "Models by task"],
+          ["Screen region", "The interaction to reference"],
+          ["Useful snippet", "Keep the working version"]
+        ]
+      },
+      {
+        title: "Launch research",
+        count: "8 saved",
+        prompt: ["Draft a launch brief from my ", " pins."],
+        pins: [
+          ["User quote", "“I want the setup to feel invisible.”"],
+          ["Market scan", "Tools by workflow"],
+          ["Reference screen", "The onboarding pattern"],
+          ["Launch checklist", "Keep the rollout sequence"]
+        ]
+      },
+      {
+        title: "Design references",
+        count: "6 saved",
+        prompt: ["Turn my ", " pins into a visual direction table."],
+        pins: [
+          ["Typography", "The serif with the right rhythm"],
+          ["Color study", "Warm neutrals"],
+          ["Layout capture", "Split hero hierarchy"],
+          ["Motion note", "Ease into the next state"]
+        ]
+      }
+    ];
+
+    const pinboard = document.querySelector(".pinboard");
+    const boardSelector = document.querySelector(".board-selector");
+    const boardSwitcher = document.querySelector(".board-switcher");
+    const boardTitle = document.querySelector(".board-title");
+    const boardCount = document.querySelector(".board-count");
+    const boardOptions = Array.from(document.querySelectorAll(".board-option"));
+    const boardNotes = Array.from(document.querySelectorAll(".note"));
+    const mcpDemoNote = document.querySelector(".mcp-demo-note");
+    const mcpDemoAction = document.querySelector(".mcp-demo-action");
+    const mcpDemoTopic = document.querySelector(".mcp-demo-topic");
+    const mcpDemoTail = document.querySelector(".mcp-demo-tail");
+    let activeBoardIndex = 0;
+    let boardIsSwitching = false;
+    let boardRotationTimer = 0;
+    let mcpDemoTimeline = null;
+    let cinematicIntroTimeline = null;
+
+    function setBoardMenu(open) {
+      boardSelector.classList.toggle("is-open", open);
+      boardSwitcher.setAttribute("aria-expanded", String(open));
+    }
+
+    function renderBoard(index) {
+      const nextBoard = pinboards[index];
+      boardTitle.textContent = nextBoard.title;
+      boardCount.textContent = nextBoard.count;
+      mcpDemoAction.textContent = nextBoard.prompt[0];
+      mcpDemoTopic.textContent = nextBoard.title;
+      mcpDemoTail.textContent = nextBoard.prompt[1];
+
+      boardNotes.forEach((note, noteIndex) => {
+        const [label, copy] = nextBoard.pins[noteIndex];
+        note.querySelector("small").textContent = label;
+        note.querySelector("p").textContent = copy;
+      });
+
+      boardOptions.forEach((option, optionIndex) => {
+        option.setAttribute("aria-selected", String(optionIndex === index));
+      });
+    }
+
+    function scheduleBoardRotation(delay = 5200) {
+      window.clearTimeout(boardRotationTimer);
+      if (reducedMotion.matches || document.documentElement.classList.contains("intro-pending")) {
+        return;
+      }
+
+      boardRotationTimer = window.setTimeout(() => {
+        if (document.hidden || boardSelector.classList.contains("is-open")) {
+          scheduleBoardRotation(1800);
+          return;
+        }
+
+        switchBoard((activeBoardIndex + 1) % pinboards.length);
+      }, delay);
+    }
+
+    function switchBoard(index, userInitiated = false) {
+      window.clearTimeout(boardRotationTimer);
+      setBoardMenu(false);
+      if (index === activeBoardIndex || boardIsSwitching) {
+        scheduleBoardRotation(userInitiated ? 6800 : 5200);
+        return;
+      }
+
+      boardIsSwitching = true;
+      pinboard.classList.add("is-switching");
+      mcpDemoNote.classList.add("is-switching");
+
+      window.setTimeout(() => {
+        activeBoardIndex = index;
+        renderBoard(activeBoardIndex);
+
+        requestAnimationFrame(() => {
+          pinboard.classList.remove("is-switching");
+          mcpDemoNote.classList.remove("is-switching");
+          boardIsSwitching = false;
+          scheduleBoardRotation(userInitiated ? 6800 : 5200);
+        });
+      }, 190);
+    }
+
+    boardSwitcher.addEventListener("click", () => {
+      const willOpen = !boardSelector.classList.contains("is-open");
+      window.clearTimeout(boardRotationTimer);
+      setBoardMenu(willOpen);
+      if (!willOpen) scheduleBoardRotation(2400);
+    });
+
+    boardSwitcher.addEventListener("keydown", (event) => {
+      if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+      event.preventDefault();
+      window.clearTimeout(boardRotationTimer);
+      setBoardMenu(true);
+      const targetIndex = event.key === "ArrowUp" ? boardOptions.length - 1 : activeBoardIndex;
+      boardOptions[targetIndex].focus();
+    });
+
+    boardOptions.forEach((option, optionIndex) => {
+      option.addEventListener("click", () => {
+        switchBoard(optionIndex, true);
+        boardSwitcher.focus();
+      });
+
+      option.addEventListener("keydown", (event) => {
+        if (!["ArrowDown", "ArrowUp", "Home", "End", "Escape"].includes(event.key)) return;
+        event.preventDefault();
+
+        if (event.key === "Escape") {
+          setBoardMenu(false);
+          boardSwitcher.focus();
+          scheduleBoardRotation(2400);
+          return;
+        }
+
+        let targetIndex = optionIndex;
+        if (event.key === "ArrowDown") targetIndex = (optionIndex + 1) % boardOptions.length;
+        if (event.key === "ArrowUp") {
+          targetIndex = (optionIndex - 1 + boardOptions.length) % boardOptions.length;
+        }
+        if (event.key === "Home") targetIndex = 0;
+        if (event.key === "End") targetIndex = boardOptions.length - 1;
+        boardOptions[targetIndex].focus();
+      });
+    });
+
+    document.addEventListener("pointerdown", (event) => {
+      if (
+        !boardSelector.contains(event.target) &&
+        boardSelector.classList.contains("is-open")
+      ) {
+        setBoardMenu(false);
+        scheduleBoardRotation(2400);
+      }
+    });
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        window.clearTimeout(boardRotationTimer);
+      } else {
+        scheduleBoardRotation(2200);
+      }
+    });
+
+    function markIntroSeen() {
+      try {
+        sessionStorage.setItem("pin-it-intro-seen", "1");
+      } catch {
+        // The intro can still run when session storage is unavailable.
+      }
+    }
+
+    function alignMcpDemoNote() {
+      const note = document.querySelector(".mcp-demo-note");
+      const cluster = document.querySelector(".mcp-cluster");
+      const logos = document.querySelector(".mcp-logos");
+      if (!note || !cluster || !logos) return;
+
+      const viewportInset = 14;
+      const clusterBox = cluster.getBoundingClientRect();
+      const noteWidth = note.offsetWidth;
+      const noteLeft = clusterBox.left + note.offsetLeft;
+      const noteRight = noteLeft + noteWidth;
+      let shift = 0;
+
+      if (noteLeft < viewportInset) {
+        shift = viewportInset - noteLeft;
+      } else if (noteRight > window.innerWidth - viewportInset) {
+        shift = window.innerWidth - viewportInset - noteRight;
+      }
+
+      const finalLeft = noteLeft + shift;
+      const logosBox = logos.getBoundingClientRect();
+      const sideInset = window.innerWidth <= 860 ? 14 : 18;
+      const logoGap = 14;
+      const minimumCopyWidth = 126;
+      const maximumLogoPadding = noteWidth - minimumCopyWidth;
+      const logosAreRight = logosBox.left + logosBox.width / 2 > finalLeft + noteWidth / 2;
+      const leftPadding = logosAreRight
+        ? sideInset
+        : Math.min(
+            maximumLogoPadding,
+            Math.max(sideInset, logosBox.right - finalLeft + logoGap)
+          );
+      const rightPadding = logosAreRight
+        ? Math.min(
+            maximumLogoPadding,
+            Math.max(sideInset, finalLeft + noteWidth - logosBox.left + logoGap)
+          )
+        : sideInset;
+
+      note.style.setProperty("--mcp-note-padding-left", `${leftPadding}px`);
+      note.style.setProperty("--mcp-note-padding-right", `${rightPadding}px`);
+      note.style.setProperty("--mcp-note-shift", `${shift}px`);
+    }
+
+    function revealMcpDemoNote() {
+      const note = document.querySelector(".mcp-demo-note");
+      if (!note || note.classList.contains("is-visible")) return;
+
+      alignMcpDemoNote();
+      const noteShift = Number.parseFloat(
+        getComputedStyle(note).getPropertyValue("--mcp-note-shift")
+      ) || 0;
+      const gsap = window.gsap;
+
+      if (!gsap || reducedMotion.matches) {
+        note.classList.add("is-visible");
+        return;
+      }
+
+      mcpDemoTimeline = gsap.timeline({
+        onComplete: () => {
+          note.classList.add("is-visible");
+          gsap.set(note, { clearProps: "opacity,transform" });
+          mcpDemoTimeline = null;
+          alignMcpDemoNote();
+        }
+      });
+
+      mcpDemoTimeline.fromTo(
+        note,
+        {
+          opacity: 0,
+          x: noteShift + 18,
+          y: 20,
+          rotation: 4,
+          scale: 0.93
+        },
+        {
+          opacity: 1,
+          x: noteShift,
+          y: 0,
+          rotation: -1.5,
+          scale: 1,
+          duration: 0.58,
+          ease: "back.out(1.45)"
+        }
+      );
+    }
+
+    function finishIntroWithoutTimeline() {
+      const introScreen = document.querySelector(".intro-screen");
+      if (window.gsap) {
+        window.gsap.set(
+          [
+            ".nav",
+            ".hero-copy",
+            ".hero-copy h1",
+            ".hero-copy .lede",
+            ".hero-actions",
+            ".shortcut",
+            ".visual-shell",
+            ".visual-shell .note-content",
+            ".slogan-pin",
+            ".slogan-pin-impact"
+          ],
+          { clearProps: "opacity,transform" }
+        );
+        window.gsap.set(".ink-word", {
+          clearProps: "opacity,transform"
+        });
+        window.gsap.set(".ink-stroke", {
+          clearProps: "strokeDashoffset"
+        });
+      }
+      document.documentElement.classList.remove("intro-pending");
+      introScreen?.remove();
+      markIntroSeen();
+      scheduleBoardRotation(1200);
+      requestAnimationFrame(alignMcpDemoNote);
+      requestAnimationFrame(revealMcpDemoNote);
+    }
+
+    function initializeCinematicIntro() {
+      const root = document.documentElement;
+      const page = document.querySelector(".page");
+      const shouldPlay = root.classList.contains("intro-pending");
+
+      if (!shouldPlay) {
+        if (reducedMotion.matches && page?.animate) {
+          page.animate([{ opacity: 0 }, { opacity: 1 }], {
+            duration: 180,
+            easing: "ease-out",
+            fill: "both"
+          });
+        }
+        scheduleBoardRotation();
+        requestAnimationFrame(revealMcpDemoNote);
+        return;
+      }
+
+      const gsap = window.gsap;
+      const introScreen = document.querySelector(".intro-screen");
+      const introBoard = document.querySelector(".intro-board-shell");
+      const introNotes = Array.from(document.querySelectorAll(".intro-note"));
+      const nav = document.querySelector(".nav");
+      const introHeroCopy = document.querySelector(".hero-copy");
+      const heroTitle = introHeroCopy.querySelector("h1");
+      const inkWords = Array.from(heroTitle.querySelectorAll(".ink-word"));
+      const pinWord = heroTitle.querySelector(".pin-word");
+      const sloganPin = heroTitle.querySelector(".slogan-pin");
+      const sloganPinImpact = heroTitle.querySelector(".slogan-pin-impact");
+      const inkStroke = heroTitle.querySelector(".ink-stroke");
+      const heroLede = introHeroCopy.querySelector(".lede");
+      const heroActions = introHeroCopy.querySelector(".hero-actions");
+      const shortcutCards = Array.from(introHeroCopy.querySelectorAll(".shortcut"));
+      const visualShell = document.querySelector(".visual-shell");
+      const liveNoteContents = Array.from(visualShell.querySelectorAll(".note-content"));
+
+      if (!gsap || !introScreen || !introBoard) {
+        finishIntroWithoutTimeline();
+        return;
+      }
+
+      const finalRotations = [-5, 4, -2];
+      const noteArrivalTimes = [0.48, 0.7, 0.92];
+      const pinArrivalTimes = [0.64, 0.86, 1.08];
+      const sloganPinTargetBox = sloganPin.getBoundingClientRect();
+      const sloganPinFlightAngle = (78 * Math.PI) / 180;
+      const sloganPinStartY = -sloganPinTargetBox.bottom - 96;
+      const sloganPinStartX = sloganPinStartY / Math.tan(sloganPinFlightAngle);
+      const revealTargets = [
+        nav,
+        introHeroCopy,
+        heroTitle,
+        ...inkWords,
+        sloganPin,
+        sloganPinImpact,
+        inkStroke,
+        heroLede,
+        heroActions,
+        ...shortcutCards,
+        visualShell,
+        ...liveNoteContents
+      ].filter(Boolean);
+
+      gsap.set(introBoard, {
+        opacity: 0,
+        y: 20,
+        scale: 0.88,
+        transformOrigin: "50% 50%"
+      });
+      gsap.set(nav, { opacity: 0, xPercent: -50, y: -16, scale: 0.975 });
+      gsap.set(introHeroCopy, { opacity: 0, y: 0 });
+      gsap.set(heroTitle, { opacity: 1 });
+      gsap.set(inkWords, {
+        opacity: 0,
+        y: 18,
+        rotation: -1,
+        transformOrigin: "50% 100%"
+      });
+      gsap.set(sloganPin, {
+        opacity: 0,
+        x: sloganPinStartX,
+        y: sloganPinStartY,
+        rotation: 28,
+        scale: 1,
+        transformOrigin: "96% 96%"
+      });
+      gsap.set(sloganPinImpact, { opacity: 0, scale: 0.45 });
+      gsap.set(inkStroke, { strokeDashoffset: 1 });
+      gsap.set([heroLede, heroActions, ...shortcutCards], {
+        opacity: 0,
+        y: 16
+      });
+      gsap.set(visualShell, { opacity: 0, y: 18, scale: 0.97 });
+      gsap.set(liveNoteContents, { opacity: 0, y: 10 });
+
+      introNotes.forEach((note, index) => {
+        const pin = note.querySelector(".intro-pin");
+        const impact = note.querySelector(".intro-impact");
+        gsap.set(note, {
+          opacity: 0,
+          x: Number(note.dataset.introX || 0),
+          y: Number(note.dataset.introY || 24),
+          rotation: Number(note.dataset.introRotation || 0)
+        });
+        gsap.set(pin, { opacity: 0, xPercent: -50, y: -62, scale: 1.15 });
+        gsap.set(impact, { opacity: 0, xPercent: -50, scale: 0.45 });
+      });
+
+      function completeCinematicIntro() {
+        root.classList.add("intro-finished");
+        root.classList.remove("intro-pending");
+        gsap.set(revealTargets, { clearProps: "opacity,transform" });
+        gsap.set(inkStroke, { clearProps: "strokeDashoffset" });
+        introScreen.remove();
+        cinematicIntroTimeline = null;
+        markIntroSeen();
+        scheduleBoardRotation(1200);
+        requestAnimationFrame(alignMcpDemoNote);
+        requestAnimationFrame(revealMcpDemoNote);
+      }
+
+      cinematicIntroTimeline = gsap.timeline({
+        defaults: { overwrite: "auto" },
+        onComplete: completeCinematicIntro
+      });
+
+      cinematicIntroTimeline.to(
+        introBoard,
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.35,
+          ease: "back.out(1.35)"
+        },
+        0.2
+      );
+
+      introNotes.forEach((note, index) => {
+        const pin = note.querySelector(".intro-pin");
+        const impact = note.querySelector(".intro-impact");
+        const arrival = noteArrivalTimes[index];
+        const pinArrival = pinArrivalTimes[index];
+
+        cinematicIntroTimeline
+          .to(
+            note,
+            {
+              opacity: 1,
+              x: 0,
+              y: 0,
+              rotation: finalRotations[index],
+              duration: 0.29,
+              ease: "power2.out"
+            },
+            arrival
+          )
+          .to(
+            pin,
+            {
+              opacity: 1,
+              y: 0,
+              scale: 1.15,
+              duration: 0.16,
+              ease: "power3.in"
+            },
+            pinArrival
+          )
+          .to(
+            note,
+            {
+              y: 2,
+              duration: 0.055,
+              ease: "power2.in"
+            },
+            pinArrival + 0.16
+          )
+          .to(
+            pin,
+            {
+              scale: 0.94,
+              duration: 0.06,
+              ease: "power2.in"
+            },
+            pinArrival + 0.16
+          )
+          .to(
+            note,
+            {
+              y: 0,
+              duration: 0.14,
+              ease: "back.out(2)"
+            },
+            pinArrival + 0.215
+          )
+          .to(
+            pin,
+            {
+              scale: 1,
+              duration: 0.14,
+              ease: "back.out(2.2)"
+            },
+            pinArrival + 0.22
+          )
+          .fromTo(
+            impact,
+            {
+              opacity: 0.42,
+              scale: 0.45
+            },
+            {
+              opacity: 0,
+              scale: 1.55,
+              duration: 0.28,
+              ease: "power2.out"
+            },
+            pinArrival + 0.17
+          );
+      });
+
+      cinematicIntroTimeline
+        .to(
+          introScreen,
+          {
+            yPercent: -102,
+            duration: 0.58,
+            ease: "power2.inOut"
+          },
+          1.76
+        )
+        .to(
+          introScreen,
+          {
+            yPercent: -108,
+            duration: 0.07,
+            ease: "power1.out"
+          },
+          2.34
+        )
+        .to(
+          nav,
+          {
+            opacity: 1,
+            xPercent: -50,
+            y: 0,
+            scale: 1,
+            duration: 0.46,
+            ease: "power3.out"
+          },
+          1.92
+        )
+        .set(introHeroCopy, { opacity: 1, y: 0 }, 1.96)
+        .to(
+          inkWords,
+          {
+            opacity: 1,
+            y: 0,
+            rotation: 0,
+            duration: 0.5,
+            stagger: 0.045,
+            ease: "back.out(1.35)"
+          },
+          1.97
+        )
+        .to(
+          inkStroke,
+          {
+            strokeDashoffset: 0,
+            duration: 0.48,
+            ease: "power2.out"
+          },
+          2.24
+        )
+        .to(
+          heroLede,
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.48,
+            ease: "power3.out"
+          },
+          2.11
+        )
+        .to(
+          heroActions,
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.44,
+            ease: "power3.out"
+          },
+          2.17
+        )
+        .to(
+          shortcutCards,
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.46,
+            stagger: 0.055,
+            ease: "power3.out"
+          },
+          2.24
+        )
+        .to(
+          visualShell,
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.53,
+            ease: "power3.out"
+          },
+          2.14
+        )
+        .to(
+          liveNoteContents,
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.42,
+            stagger: 0.045,
+            ease: "power3.out"
+          },
+          2.28
+        )
+        .set(sloganPin, { opacity: 1 }, 2.84)
+        .to(
+          sloganPin,
+          {
+            x: 0,
+            y: 0,
+            rotation: 28,
+            scale: 1,
+            duration: 0.72,
+            ease: "power2.in"
+          },
+          2.84
+        )
+        .to(
+          pinWord,
+          {
+            y: 2,
+            rotation: 0.35,
+            duration: 0.055,
+            ease: "power2.in"
+          },
+          3.55
+        )
+        .to(
+          sloganPin,
+          {
+            scale: 0.91,
+            duration: 0.055,
+            ease: "power2.in"
+          },
+          3.55
+        )
+        .fromTo(
+          sloganPinImpact,
+          {
+            opacity: 0.54,
+            scale: 0.45
+          },
+          {
+            opacity: 0,
+            scale: 1.72,
+            duration: 0.3,
+            ease: "power2.out"
+          },
+          3.55
+        )
+        .to(
+          pinWord,
+          {
+            y: 0,
+            rotation: 0,
+            duration: 0.18,
+            ease: "back.out(2.2)"
+          },
+          3.605
+        )
+        .to(
+          sloganPin,
+          {
+            scale: 1,
+            rotation: 28,
+            duration: 0.2,
+            ease: "elastic.out(1, 0.48)"
+          },
+          3.605
+        )
+        .to({}, { duration: 0.01 }, 3.81);
+    }
+
+    reducedMotion.addEventListener("change", (event) => {
+      if (event.matches && cinematicIntroTimeline) {
+        cinematicIntroTimeline.kill();
+        cinematicIntroTimeline = null;
+        finishIntroWithoutTimeline();
+      }
+      if (event.matches && mcpDemoTimeline) {
+        const note = document.querySelector(".mcp-demo-note");
+        mcpDemoTimeline.kill();
+        mcpDemoTimeline = null;
+        if (note) {
+          note.classList.add("is-visible");
+          window.gsap?.set(note, { clearProps: "opacity,transform" });
+          alignMcpDemoNote();
+        }
+      }
+      scheduleBoardRotation();
+    });
+    initializeCinematicIntro();
+
+    window.addEventListener("resize", alignMcpDemoNote);
+    document.fonts?.ready.then(alignMcpDemoNote, alignMcpDemoNote);
+    alignMcpDemoNote();
+  </script>
+</body>
+</html>

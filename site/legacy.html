@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pin It — Keep the exact words.</title>
+<meta name="description" content="Pin It is a small, beautiful Mac app for saving the snippets, tables, and screenshots worth keeping while you work with AI — and pulling them back into any MCP-enabled tool. Verbatim. Never paraphrased." />
+<meta property="og:title" content="Pin It — Keep the exact words." />
+<meta property="og:description" content="One hotkey saves the parts worth building from. One MCP call brings them back — character for character, pixel for pixel." />
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   PIN IT — LANDING (light)
+   Vibe: warm cream stage, ink type, periwinkle + coral accents
+   Motion: spring physics, one scroll-driven canvas story
+   ============================================================ */
+:root{
+  --bg:#fbfaf4;
+  --bg-2:#fffdf8;
+  --ink:#0e1424;
+  --muted:rgba(14,20,36,.62);
+  --faint:rgba(14,20,36,.4);
+  --hair:rgba(14,20,36,.08);
+  --hair-strong:rgba(14,20,36,.14);
+  --peri:#93a7ff;
+  --peri-soft:#b6c3ff;
+  --peri-ink:#4d61c9;
+  --peri-dim:rgba(147,167,255,.16);
+  --peri-sel:rgba(147,167,255,.36);
+  --coral:#ff9389;
+  --coral-ink:#d86f69;
+  --coral-dim:rgba(255,147,137,.14);
+  --white:#ffffff;
+  --display:'Clash Display',sans-serif;
+  --body:'Geist',sans-serif;
+  --mono:'Geist Mono',monospace;
+  --spring:cubic-bezier(.32,.72,0,1);
+  --expo:cubic-bezier(.16,1,.3,1);
+  --snap:cubic-bezier(.6,.04,.1,1);
+  --r-shell:2rem;
+  --r-core:calc(2rem - .375rem);
+  --shadow-soft:0 30px 80px -28px rgba(14,20,36,.22),0 8px 24px -12px rgba(14,20,36,.1);
+  --shadow-card:0 18px 50px -20px rgba(14,20,36,.18);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+::selection{background:var(--peri-sel);color:var(--ink)}
+
+/* ---------- ambient: soft washes + grain ---------- */
+.stage-bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;will-change:transform}
+.orb-a{width:60vw;height:60vw;left:-20vw;top:-24vw;background:radial-gradient(circle,rgba(207,216,255,.85),transparent 64%);animation:drift-a 28s var(--spring) infinite alternate}
+.orb-b{width:44vw;height:44vw;right:-14vw;top:22vh;background:radial-gradient(circle,rgba(255,208,203,.55),transparent 64%);animation:drift-b 34s var(--spring) infinite alternate}
+.orb-c{width:48vw;height:48vw;left:28vw;bottom:-32vw;background:radial-gradient(circle,rgba(237,242,255,.9),transparent 60%);animation:drift-a 40s var(--spring) infinite alternate-reverse}
+@keyframes drift-a{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(5vw,4vh,0) scale(1.1)}}
+@keyframes drift-b{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(-4vw,-5vh,0) scale(1.07)}}
+.grain{position:fixed;inset:0;z-index:60;pointer-events:none;opacity:.035;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E")}
+
+.wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:0 32px}
+
+/* ---------- scroll reveal ---------- */
+.rv{opacity:0;transform:translate3d(0,64px,0);filter:blur(12px);
+  transition:opacity .9s var(--expo),transform .9s var(--expo),filter .9s var(--expo);
+  transition-delay:var(--d,0ms)}
+.rv.in{opacity:1;transform:translate3d(0,0,0);filter:blur(0)}
+
+/* ---------- floating glass nav ---------- */
+.nav{position:fixed;top:24px;left:50%;transform:translateX(-50%);z-index:50;
+  display:flex;align-items:center;gap:6px;padding:7px;
+  background:rgba(255,255,255,.62);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border:1px solid rgba(14,20,36,.07);border-radius:999px;
+  box-shadow:0 18px 50px -20px rgba(14,20,36,.22), inset 0 1px 1px rgba(255,255,255,.8)}
+.nav-logo{display:flex;align-items:center;gap:9px;padding:6px 14px 6px 8px;text-decoration:none;color:var(--ink);
+  font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:.01em}
+.nav-logo img{width:26px;height:26px;display:block}
+.nav-links{display:flex;align-items:center;gap:2px}
+.nav-links a{padding:8px 14px;border-radius:999px;text-decoration:none;color:var(--muted);font-size:13.5px;font-weight:500;
+  transition:color .35s var(--spring),background .35s var(--spring)}
+.nav-links a:hover{color:var(--ink);background:rgba(14,20,36,.05)}
+.nav-cta{display:flex;align-items:center;gap:8px;margin-left:6px;padding:7px 7px 7px 16px;border-radius:999px;
+  background:var(--ink);color:var(--bg);text-decoration:none;font-size:13.5px;font-weight:600;
+  transition:transform .45s var(--spring),box-shadow .45s var(--spring)}
+.nav-cta .orb-btn{width:26px;height:26px;background:rgba(255,255,255,.16)}
+.nav-cta:hover{transform:scale(1.03);box-shadow:0 12px 30px -10px rgba(14,20,36,.45)}
+.nav-cta:active{transform:scale(.98)}
+.burger{display:none;width:40px;height:40px;border:none;background:transparent;cursor:pointer;position:relative;border-radius:999px}
+.burger span{position:absolute;left:11px;width:18px;height:1.5px;background:var(--ink);border-radius:2px;
+  transition:transform .5s var(--spring),top .5s var(--spring),opacity .3s}
+.burger span:nth-child(1){top:16px}
+.burger span:nth-child(2){top:23px}
+.burger.open span:nth-child(1){top:19.5px;transform:rotate(45deg)}
+.burger.open span:nth-child(2){top:19.5px;transform:rotate(-45deg)}
+
+.menu{position:fixed;inset:0;z-index:40;background:rgba(251,250,244,.86);
+  backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
+  display:flex;flex-direction:column;justify-content:center;padding:0 40px;
+  opacity:0;pointer-events:none;transition:opacity .55s var(--spring)}
+.menu.open{opacity:1;pointer-events:auto}
+.menu a{display:block;overflow:hidden;text-decoration:none;color:var(--ink);
+  font-family:var(--display);font-weight:600;font-size:clamp(38px,9vw,56px);line-height:1.25;padding:6px 0}
+.menu a i{display:block;font-style:normal;transform:translate3d(0,110%,0);opacity:0;
+  transition:transform .8s var(--expo),opacity .8s var(--expo)}
+.menu.open a:nth-child(1) i{transition-delay:.10s}
+.menu.open a:nth-child(2) i{transition-delay:.16s}
+.menu.open a:nth-child(3) i{transition-delay:.22s}
+.menu.open a i{transform:translate3d(0,0,0);opacity:1}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;gap:12px;padding:14px 14px 14px 26px;border-radius:999px;
+  text-decoration:none;font-weight:600;font-size:15px;border:1px solid transparent;
+  transition:transform .45s var(--spring),box-shadow .45s var(--spring),background .45s var(--spring)}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--ink);color:var(--bg)}
+.btn-primary:hover{transform:scale(1.02);box-shadow:0 18px 50px -14px rgba(14,20,36,.45)}
+.btn-ghost{background:var(--white);color:var(--ink);border-color:var(--hair-strong)}
+.btn-ghost:hover{background:#fff;transform:scale(1.02);box-shadow:var(--shadow-card)}
+.orb-btn{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;flex:none;
+  background:rgba(255,255,255,.16);transition:transform .45s var(--spring)}
+.btn-ghost .orb-btn{background:rgba(14,20,36,.06)}
+.btn:hover .orb-btn{transform:translate(3px,-2px) scale(1.06)}
+.orb-btn svg{display:block}
+
+/* ---------- eyebrow ---------- */
+.eyebrow{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:6px 14px;
+  font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;color:var(--peri-ink);
+  border:1px solid rgba(147,167,255,.45);background:rgba(147,167,255,.1)}
+.eyebrow.warm{color:var(--coral-ink);border-color:rgba(216,111,105,.4);background:rgba(255,147,137,.1)}
+.eyebrow .dot{width:5px;height:5px;border-radius:50%;background:currentColor;animation:pulse 2.4s var(--spring) infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+
+/* ---------- typography ---------- */
+h1,h2{font-family:var(--display);font-weight:600;letter-spacing:-.015em}
+.h-display{font-size:clamp(46px,7.4vw,96px);line-height:1.02}
+.h-section{font-size:clamp(34px,4.6vw,58px);line-height:1.06}
+.lede{font-size:clamp(16px,1.6vw,19px);color:var(--muted);line-height:1.7}
+.mono{font-family:var(--mono)}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{position:relative;padding:176px 0 40px;min-height:100dvh;display:flex;flex-direction:column;justify-content:center}
+.hero-inner{position:relative;text-align:center;max-width:860px;margin:0 auto}
+.hero h1{margin:0 0 26px}
+.hero h1 .underlined{position:relative;white-space:nowrap}
+.hero h1 .underlined svg{position:absolute;left:0;right:0;bottom:-.12em;width:100%;height:.28em;overflow:visible}
+.hero h1 .underlined path{fill:none;stroke:var(--coral);stroke-width:7;stroke-linecap:round;
+  stroke-dasharray:620;stroke-dashoffset:620;animation:draw 1.3s var(--expo) .9s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes blink{50%{opacity:0}}
+.hero .lede{max-width:560px;margin:0 auto 40px}
+.hero .lede b{color:var(--ink);font-weight:500}
+.hero-ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+/* hero sticky notes — pinned to the page like the app icon */
+.sticky-pin{position:absolute;z-index:-1;will-change:transform;transition:transform .9s var(--expo)}
+.sticky-pin .pinhead{position:absolute;top:-7px;left:50%;margin-left:-7px;width:14px;height:14px;border-radius:50%;z-index:2;
+  background:radial-gradient(circle at 35% 30%,#3a423c,#1f2522 65%);
+  box-shadow:0 4px 7px rgba(14,20,36,.35), inset 1px 1px 2px rgba(255,255,255,.3)}
+.sticky-pin .face{border-radius:4px;padding:18px 15px 14px;font-size:11px;line-height:1.5;text-align:left;color:#1f2522;
+  box-shadow:0 16px 34px -14px rgba(14,20,36,.3),0 3px 8px -3px rgba(14,20,36,.12);
+  background-image:linear-gradient(180deg,rgba(255,255,255,.4),rgba(255,255,255,0) 38%)}
+.sticky-pin .face .tag{display:block;font-family:var(--mono);font-size:8px;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(31,37,34,.52);margin-bottom:6px}
+.face.peach{background-color:#f2d4c3}
+.face.lavender{background-color:#e4daec}
+.face.butter{background-color:#f5e9c2}
+.face.sage{background-color:#dde9d8}
+.sp-1{left:-190px;top:53%;width:200px;transform:rotate(-6deg);animation:bob 7s ease-in-out infinite}
+.sp-2{right:-200px;top:45%;width:210px;transform:rotate(4deg);animation:bob 8.5s ease-in-out 1.2s infinite}
+.sp-3{left:-130px;bottom:0;width:185px;transform:rotate(3deg);animation:bob 9s ease-in-out .6s infinite}
+.sp-4{right:-140px;bottom:-3%;width:190px;transform:rotate(-4deg);animation:bob 7.6s ease-in-out 2s infinite}
+@keyframes bob{0%,100%{translate:0 0}50%{translate:0 -10px}}
+.sticky-pin .swatch{display:flex;gap:5px;margin-top:8px}
+.sticky-pin .swatch i{width:18px;height:18px;border-radius:6px;border:1px solid rgba(31,37,34,.12)}
+.sticky-pin .shot{margin-top:8px;height:46px;border-radius:5px;
+  background:linear-gradient(135deg,#edf2ff 0%,#cfd8ff 55%,#b6c3ff 100%);position:relative;overflow:hidden}
+.sticky-pin .shot::after{content:"";position:absolute;inset:8px 30% 8px 8px;border-radius:4px;background:rgba(14,20,36,.14)}
+.sticky-pin .mini-table{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:rgba(31,37,34,.18);border-radius:4px;overflow:hidden;margin-top:7px}
+.sticky-pin .mini-table i{height:12px;background:rgba(255,255,255,.82)}
+.sticky-pin .mini-table i:nth-child(-n+3){background:rgba(255,255,255,.55)}
+
+/* keycap demo row */
+.hero-keys{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:64px}
+.kc{position:relative;min-width:52px;height:52px;padding:0 14px;border-radius:13px;
+  display:grid;place-items:center;font-family:var(--mono);font-size:17px;font-weight:500;color:var(--ink);
+  background:linear-gradient(180deg,#ffffff,#f3f1e9);
+  border:1px solid var(--hair-strong);
+  box-shadow:0 6px 0 -2px rgba(14,20,36,.12),0 16px 30px -12px rgba(14,20,36,.22),inset 0 1px 1px #fff}
+.kc small{position:absolute;top:5px;right:8px;font-size:8px;color:var(--faint);letter-spacing:.06em}
+.hero-keys .plus{color:var(--faint);font-size:14px}
+.hero-keys .kc{animation:keypress-idle 5s var(--snap) infinite}
+.hero-keys .kc:nth-child(3){animation-delay:.07s}
+.hero-keys .kc:nth-child(5){animation-delay:.14s}
+@keyframes keypress-idle{0%,73%,87%,100%{transform:translateY(0);box-shadow:0 6px 0 -2px rgba(14,20,36,.12),0 16px 30px -12px rgba(14,20,36,.22),inset 0 1px 1px #fff}
+  78%,82%{transform:translateY(3px);box-shadow:0 2px 0 -2px rgba(14,20,36,.12),0 8px 16px -8px rgba(14,20,36,.2),inset 0 1px 1px #fff}}
+.hero-keys-label{margin-top:16px;text-align:center;font-size:12px;color:var(--faint);letter-spacing:.08em;text-transform:uppercase}
+
+/* ---------- marquee ---------- */
+.marquee-band{margin:110px 0 0;padding:26px 0;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);
+  overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+.marquee{display:flex;width:max-content;animation:scroll 34s linear infinite}
+.marquee-band:hover .marquee{animation-play-state:paused}
+@keyframes scroll{to{transform:translateX(-50%)}}
+.marquee span{display:flex;align-items:center;gap:14px;padding:0 28px;white-space:nowrap;
+  font-family:var(--mono);font-size:13px;letter-spacing:.06em;color:var(--muted)}
+.marquee span::after{content:"";width:4px;height:4px;border-radius:50%;background:var(--coral);opacity:.85}
+
+/* ============================================================
+   sections / shared
+   ============================================================ */
+.section{position:relative;padding:clamp(110px,13vw,180px) 0}
+
+/* ============================================================
+   THE CANVAS — scroll-driven story
+   ============================================================ */
+.canvas-head{max-width:680px;margin-bottom:clamp(40px,6vw,80px)}
+.canvas-head h2{margin:22px 0 18px}
+.canvas-grid{display:grid;grid-template-columns:5fr 7fr;gap:clamp(36px,5vw,72px);align-items:start}
+.steps-col{display:flex;flex-direction:column}
+.step{min-height:92vh;display:flex;align-items:center}
+.step-card{padding:8px 0;opacity:.32;transform:translateX(-6px);
+  transition:opacity .6s var(--expo),transform .6s var(--expo)}
+.step.active .step-card{opacity:1;transform:translateX(0)}
+.step-num{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--coral-ink);display:flex;align-items:center;gap:10px}
+.step-num::after{content:"";height:1px;width:44px;background:var(--coral);opacity:.5}
+.step-card h3{font-family:var(--display);font-weight:600;font-size:clamp(24px,2.4vw,32px);letter-spacing:-.01em;margin:12px 0 10px}
+.step-card p{font-size:15px;color:var(--muted);line-height:1.7;max-width:380px}
+.step-card p b{color:var(--ink);font-weight:500}
+.step-card .mono{color:var(--ink);font-size:13.5px}
+
+.stage-col{position:sticky;top:calc(50svh - 265px)}
+.canvas-shell{border-radius:var(--r-shell);padding:7px;background:var(--white);
+  border:1px solid var(--hair);box-shadow:var(--shadow-soft)}
+.canvas-core{border-radius:var(--r-core);overflow:hidden;position:relative;background:var(--bg-2);
+  border:1px solid rgba(14,20,36,.04)}
+#stage-fit{position:relative;width:100%;aspect-ratio:640/460;overflow:hidden}
+.canvas-stage{position:absolute;top:0;left:0;width:640px;height:460px;transform-origin:top left}
+
+.scene{position:absolute;inset:0;display:none}
+.scene.on{display:block;animation:scene-in .55s var(--expo)}
+@keyframes scene-in{from{opacity:0;transform:translateY(12px) scale(.992)}to{opacity:1;transform:none}}
+
+/* shared mockup chrome */
+.mwin{position:absolute;border-radius:16px;background:var(--white);border:1px solid var(--hair);
+  box-shadow:0 24px 60px -22px rgba(14,20,36,.25);overflow:hidden;color:var(--ink)}
+.mbar{display:flex;align-items:center;gap:6px;height:36px;padding:0 13px;border-bottom:1px solid rgba(14,20,36,.06)}
+.mbar i{width:9px;height:9px;border-radius:50%}
+.mbar i:nth-child(1){background:#ff9389}.mbar i:nth-child(2){background:#f5d76e}.mbar i:nth-child(3){background:#9ad29c}
+.mbar em{margin-left:8px;font-style:normal;font-size:10.5px;color:var(--muted);font-weight:500}
+/* mac cursor */
+.cursor{position:absolute;z-index:9;left:0;top:0;will-change:transform;pointer-events:none}
+/* mini dock (scenes 1-3) */
+.dock{position:absolute;right:28px;top:92px;width:92px;border-radius:18px;padding:5px;
+  background:var(--white);border:1px solid var(--hair);z-index:3;box-shadow:var(--shadow-card)}
+.dock .core{border-radius:14px;background:var(--bg-2);padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:9px;border:1px solid rgba(14,20,36,.04)}
+.dock .pin-ico{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--coral-dim)}
+.dock .count{font-family:var(--mono);font-size:17px;font-weight:500;color:var(--ink);height:22px;overflow:hidden;line-height:22px}
+.dock .count .reel{display:block}
+.dock .lbl{font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);font-weight:600}
+.dock .rows{width:100%;display:flex;flex-direction:column;gap:4px}
+.dock .rows i{display:block;height:5px;border-radius:3px;background:rgba(14,20,36,.08)}
+.dock .rows i:nth-child(1){width:100%}.dock .rows i:nth-child(2){width:78%}.dock .rows i:nth-child(3){width:88%}
+.dock .rows i.new{background:rgba(216,111,105,.4);transform-origin:left}
+/* hotkey toast */
+.toast{position:absolute;left:50%;bottom:22px;transform:translate(-50%,16px);z-index:6;
+  display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;
+  background:var(--ink);border:1px solid var(--ink);
+  font-family:var(--mono);font-size:10.5px;color:var(--peri-soft);opacity:0}
+.toast b{color:#fff;font-weight:500}
+/* demo keycaps */
+.demo-keys{position:absolute;left:48px;bottom:22px;display:flex;gap:7px;z-index:4}
+.demo-keys .k{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;
+  font-family:var(--mono);font-size:13px;color:var(--ink);
+  background:linear-gradient(180deg,#ffffff,#f1efe7);border:1px solid var(--hair-strong);
+  box-shadow:0 5px 0 -2px rgba(14,20,36,.12),0 12px 24px -10px rgba(14,20,36,.2)}
+/* flying pin */
+.fly{position:absolute;z-index:8;border-radius:13px;padding:4px;background:var(--white);
+  border:1px solid var(--hair);box-shadow:0 24px 50px -16px rgba(14,20,36,.3);
+  opacity:0;will-change:transform,opacity}
+.fly .core{border-radius:10px;background:var(--bg-2);color:var(--ink);padding:9px 11px;font-size:9.5px;line-height:1.5;border:1px solid rgba(14,20,36,.04)}
+.fly .core .tag{display:block;font-family:var(--mono);font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--coral-ink);margin-bottom:4px}
+
+/* ---- SCENE 1 : long answer, cursor selects, pin (12s) ---- */
+.s1 .mwin{left:30px;top:26px;width:432px;height:408px}
+.s1-clip{position:absolute;top:36px;left:0;right:0;bottom:0;overflow:hidden}
+.s1-scroll{padding:14px 22px;animation:s1scroll 12s var(--snap) infinite}
+@keyframes s1scroll{0%,7%{transform:translateY(0)}20%,100%{transform:translateY(-152px)}}
+.s1-user{margin-left:auto;width:max-content;max-width:75%;background:#edf2ff;border-radius:12px 12px 3px 12px;padding:8px 12px;font-size:11px;line-height:1.5}
+.s1-ai{margin-top:12px;font-size:11px;line-height:1.62}
+.s1-ai .ai-tag{display:flex;align-items:center;gap:6px;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.s1-ai .ai-tag i{width:14px;height:14px;border-radius:5px;background:linear-gradient(135deg,#93a7ff,#d86f69)}
+.s1-ai p{margin:0 0 9px}
+.s1-ai .hline{font-weight:600;margin:11px 0 6px}
+.bar{display:block;height:7px;border-radius:4px;background:rgba(14,20,36,.08);margin:7px 0}
+.bar.w1{width:94%}.bar.w2{width:78%}.bar.w3{width:60%}.bar.w4{width:86%}
+.keep{position:relative;margin:4px 0 9px}
+.kline{position:relative;display:block;white-space:nowrap;padding:1px 4px;width:max-content;max-width:100%}
+.kline .khl{position:absolute;inset:0;border-radius:4px;background:var(--peri-sel);
+  transform:scaleX(0);transform-origin:left center}
+.kline .kt{position:relative;z-index:1}
+.kline:nth-child(1) .khl{animation:khl1 12s var(--snap) infinite}
+.kline:nth-child(2) .khl{animation:khl2 12s var(--snap) infinite}
+@keyframes khl1{0%,26%{transform:scaleX(0)}32%,93%{transform:scaleX(1)}97%,100%{transform:scaleX(0)}}
+@keyframes khl2{0%,32%{transform:scaleX(0)}38%,93%{transform:scaleX(1)}97%,100%{transform:scaleX(0)}}
+/* cursor lives inside .keep, so it tracks the text it selects */
+.s1-cursor{opacity:0;animation:s1cur 12s var(--snap) infinite}
+@keyframes s1cur{
+  0%,24%{opacity:0;transform:translate(4px,7px)}
+  26%{opacity:1;transform:translate(4px,7px)}
+  32%{opacity:1;transform:translate(328px,8px)}
+  32.5%{opacity:1;transform:translate(4px,25px)}
+  38%{opacity:1;transform:translate(258px,26px)}
+  46%{opacity:1;transform:translate(258px,26px)}
+  52%,100%{opacity:0;transform:translate(266px,34px)}}
+.s1 .demo-keys .k{animation:s1press 12s var(--snap) infinite}
+.s1 .demo-keys .k:nth-child(2){animation-delay:.05s}
+.s1 .demo-keys .k:nth-child(3){animation-delay:.1s}
+@keyframes s1press{0%,40%,48%,100%{transform:translateY(0)}42%,46%{transform:translateY(3px)}}
+.s1 .toast{animation:s1toast 12s var(--spring) infinite}
+@keyframes s1toast{0%,42%{opacity:0;transform:translate(-50%,16px)}47%,60%{opacity:1;transform:translate(-50%,0)}66%,100%{opacity:0;transform:translate(-50%,16px)}}
+.s1 .fly{left:56px;top:148px;width:212px;animation:s1fly 12s var(--spring) infinite}
+@keyframes s1fly{
+  0%,44%{opacity:0;transform:translate(0,0) scale(.55)}
+  48%{opacity:1;transform:translate(0,-8px) scale(1)}
+  53%{opacity:1;transform:translate(0,-8px) scale(1)}
+  62%,100%{opacity:0;transform:translate(420px,-56px) scale(.13)}}
+.s1 .count .reel{animation:s1count 12s var(--snap) infinite}
+@keyframes s1count{0%,60%{transform:translateY(0)}65%,100%{transform:translateY(-22px)}}
+.s1 .rows i.new{animation:s1row 12s var(--expo) infinite}
+@keyframes s1row{0%,61%{transform:scaleX(0);opacity:0}66%,100%{transform:scaleX(1);opacity:1}}
+.s1 .pin-ico{animation:s1pulse 12s var(--spring) infinite}
+@keyframes s1pulse{0%,58%,70%,100%{box-shadow:0 0 0 0 rgba(255,147,137,0)}62%{box-shadow:0 0 0 9px rgba(255,147,137,.3)}}
+
+/* ---- SCENE 2 : table with format (10s) ---- */
+.s2 .mwin{left:30px;top:26px;width:432px;height:408px}
+.s2-body{padding:16px 22px;font-size:11px}
+.s2-body .doc-title{font-weight:600;font-size:12px;margin-bottom:4px}
+.s2-tablewrap{position:relative;margin-top:10px}
+.s2-table{width:100%;border-collapse:collapse;font-size:10.5px;border:1px solid rgba(14,20,36,.1);border-radius:8px;overflow:hidden}
+.s2-table th{background:var(--peri-dim);color:var(--ink);text-align:left;font-weight:600;padding:7px 10px;border-bottom:1px solid rgba(14,20,36,.1)}
+.s2-table td{padding:7px 10px;border-bottom:1px solid rgba(14,20,36,.06);color:var(--muted)}
+.s2-table td:first-child{color:var(--ink);font-weight:500}
+.s2-table td .ok{color:#346538;font-weight:500}
+.s2-table td .meh{color:var(--coral-ink);font-weight:500}
+/* ring + cursor live inside the table wrapper, so they track the table exactly.
+   Ring and cursor share one easing and one keyframe range: the cursor tip rides
+   the ring's growing bottom-right corner like a real drag-select. */
+.s2-ring{position:absolute;inset:-5px;border-radius:10px;z-index:5;
+  border:1.5px solid var(--peri-ink);background:rgba(147,167,255,.14);
+  transform-origin:top left;opacity:0;animation:s2ring 10s var(--snap) infinite}
+@keyframes s2ring{0%,17%{opacity:0;transform:scale(.02,.02)}18%{opacity:1;transform:scale(.08,.08)}31%,92%{opacity:1;transform:scale(1,1)}96%,100%{opacity:0;transform:scale(1,1)}}
+.s2-cursor{opacity:0;animation:s2cur 10s var(--snap) infinite;z-index:6}
+@keyframes s2cur{
+  0%,14%{opacity:0;transform:translate(-4px,-4px)}
+  18%{opacity:1;transform:translate(-4px,-4px)}
+  31%{opacity:1;transform:translate(384px,160px)}
+  40%{opacity:1;transform:translate(384px,160px)}
+  46%,100%{opacity:0;transform:translate(392px,168px)}}
+.s2 .demo-keys .k{animation:s2press 10s var(--snap) infinite}
+.s2 .demo-keys .k:nth-child(2){animation-delay:.05s}
+.s2 .demo-keys .k:nth-child(3){animation-delay:.1s}
+@keyframes s2press{0%,34%,42%,100%{transform:translateY(0)}36%,40%{transform:translateY(3px)}}
+.s2 .fly{left:140px;top:200px;width:190px;animation:s2fly 10s var(--spring) infinite}
+.s2 .fly .mini-table{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:rgba(14,20,36,.12);border-radius:5px;overflow:hidden;margin-top:5px}
+.s2 .fly .mini-table i{height:11px;background:#fff}
+.s2 .fly .mini-table i:nth-child(-n+3){background:#e6ebff}
+@keyframes s2fly{
+  0%,40%{opacity:0;transform:translate(0,0) scale(.55)}
+  44%{opacity:1;transform:translate(0,-8px) scale(1)}
+  49%{opacity:1;transform:translate(0,-8px) scale(1)}
+  58%,100%{opacity:0;transform:translate(380px,-92px) scale(.13)}}
+.s2 .count .reel{animation:s2count 10s var(--snap) infinite}
+@keyframes s2count{0%,56%{transform:translateY(0)}61%,100%{transform:translateY(-22px)}}
+.s2 .rows i.new{animation:s2row 10s var(--expo) infinite}
+@keyframes s2row{0%,57%{transform:scaleX(0);opacity:0}62%,100%{transform:scaleX(1);opacity:1}}
+.s2 .pin-ico{animation:s2pulse 10s var(--spring) infinite}
+@keyframes s2pulse{0%,54%,66%,100%{box-shadow:0 0 0 0 rgba(255,147,137,0)}58%{box-shadow:0 0 0 9px rgba(255,147,137,.3)}}
+.s2 .toast{animation:s2toast 10s var(--spring) infinite}
+@keyframes s2toast{0%,36%{opacity:0;transform:translate(-50%,16px)}41%,54%{opacity:1;transform:translate(-50%,0)}60%,100%{opacity:0;transform:translate(-50%,16px)}}
+
+/* ---- SCENE 3 : image pin (9s) ---- */
+.s3 .mwin{left:30px;top:26px;width:432px;height:408px}
+.s3-body{padding:16px 22px;font-size:11px}
+.s3-body .doc-title{font-weight:600;font-size:12px;margin-bottom:10px}
+.s3-shot{position:relative;width:340px;height:200px;border-radius:12px;overflow:hidden;
+  background:linear-gradient(135deg,#edf2ff 0%,#cfd8ff 50%,#b6c3ff 100%)}
+.s3-shot .sun{position:absolute;right:26px;top:22px;width:44px;height:44px;border-radius:50%;background:#ff9389;opacity:.9}
+.s3-shot .ridge{position:absolute;left:0;right:0;bottom:-30px;height:110px;background:#93a7ff;border-radius:50% 50% 0 0;opacity:.65}
+.s3-shot .ridge.b{bottom:-58px;background:#4d61c9;opacity:.5}
+.s3-shot .ui{position:absolute;left:20px;top:24px;display:flex;flex-direction:column;gap:7px}
+.s3-shot .ui i{display:block;height:9px;border-radius:5px;background:rgba(255,255,255,.85)}
+.s3-shot .ui i:nth-child(1){width:120px}.s3-shot .ui i:nth-child(2){width:84px}
+.s3-cap{margin-top:9px;color:var(--muted);font-size:10px}
+/* frame wraps the image; ring + cursor are anchored to it. The cursor walks
+   onto the image, clicks (scale dip), and the ring snaps on at that instant. */
+.s3-frame{position:relative;width:340px}
+.s3-ring{position:absolute;inset:-5px;border-radius:14px;z-index:5;
+  border:1.5px solid var(--peri-ink);background:rgba(147,167,255,.1);
+  opacity:0;animation:s3ring 9s var(--spring) infinite}
+@keyframes s3ring{0%,21%{opacity:0;transform:scale(.97)}23%{opacity:1;transform:scale(1.015)}26%,91%{opacity:1;transform:scale(1)}96%,100%{opacity:0;transform:scale(1)}}
+.s3-cursor{opacity:0;animation:s3cur 9s var(--spring) infinite;z-index:6}
+@keyframes s3cur{
+  0%,10%{opacity:0;transform:translate(330px,212px)}
+  13%{opacity:1;transform:translate(330px,212px)}
+  20%{opacity:1;transform:translate(165px,96px)}
+  22%{opacity:1;transform:translate(165px,96px) scale(.86)}
+  24%{opacity:1;transform:translate(165px,96px) scale(1)}
+  36%{opacity:1;transform:translate(165px,96px)}
+  42%,100%{opacity:0;transform:translate(165px,96px)}}
+.s3 .demo-keys .k{animation:s3press 9s var(--snap) infinite}
+.s3 .demo-keys .k:nth-child(2){animation-delay:.05s}
+.s3 .demo-keys .k:nth-child(3){animation-delay:.1s}
+@keyframes s3press{0%,28%,36%,100%{transform:translateY(0)}30%,34%{transform:translateY(3px)}}
+.s3 .fly{left:155px;top:172px;width:150px;animation:s3fly 9s var(--spring) infinite}
+.s3 .fly .thumb{height:62px;border-radius:6px;margin-top:5px;
+  background:linear-gradient(135deg,#edf2ff 0%,#cfd8ff 50%,#b6c3ff 100%);position:relative;overflow:hidden}
+.s3 .fly .thumb::after{content:"";position:absolute;right:8px;top:7px;width:14px;height:14px;border-radius:50%;background:#ff9389}
+@keyframes s3fly{
+  0%,34%{opacity:0;transform:translate(0,0) scale(.55)}
+  38%{opacity:1;transform:translate(0,-8px) scale(1)}
+  43%{opacity:1;transform:translate(0,-8px) scale(1)}
+  53%,100%{opacity:0;transform:translate(338px,-58px) scale(.15)}}
+.s3 .count .reel{animation:s3count 9s var(--snap) infinite}
+@keyframes s3count{0%,51%{transform:translateY(0)}56%,100%{transform:translateY(-22px)}}
+.s3 .rows i.new{animation:s3row 9s var(--expo) infinite}
+@keyframes s3row{0%,52%{transform:scaleX(0);opacity:0}57%,100%{transform:scaleX(1);opacity:1}}
+.s3 .pin-ico{animation:s3pulse 9s var(--spring) infinite}
+@keyframes s3pulse{0%,49%,61%,100%{box-shadow:0 0 0 0 rgba(255,147,137,0)}53%{box-shadow:0 0 0 9px rgba(255,147,137,.3)}}
+.s3 .toast{animation:s3toast 9s var(--spring) infinite}
+@keyframes s3toast{0%,30%{opacity:0;transform:translate(-50%,16px)}35%,48%{opacity:1;transform:translate(-50%,0)}54%,100%{opacity:0;transform:translate(-50%,16px)}}
+
+/* ---- SCENE 4 : the board (9s) ---- */
+.s4 .mwin{inset:24px;border-radius:18px}
+.s4-bar-right{margin-left:auto;display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:9px;color:var(--coral-ink)}
+.s4-search{margin:14px 18px 4px;display:flex;align-items:center;gap:8px;height:30px;padding:0 12px;border-radius:9px;
+  background:var(--bg);border:1px solid var(--hair);font-size:10.5px;color:var(--faint)}
+.s4-search .scaret{width:1px;height:12px;background:var(--ink);animation:blink 1.1s steps(1) infinite}
+.s4-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:12px 18px}
+.b-card{border-radius:12px;background:var(--white);border:1px solid var(--hair);box-shadow:0 10px 26px -12px rgba(14,20,36,.16);
+  padding:11px 12px;font-size:9.5px;line-height:1.5;color:var(--muted);
+  opacity:0;transform:translateY(16px) scale(.96);animation:bin 9s var(--expo) infinite;animation-delay:var(--bd,0s)}
+@keyframes bin{0%,4%{opacity:0;transform:translateY(16px) scale(.96)}10%,95%{opacity:1;transform:translateY(0) scale(1)}99%,100%{opacity:0}}
+.b-card .bt{display:flex;align-items:center;gap:6px;font-size:9px;font-weight:600;color:var(--ink);margin-bottom:5px}
+.b-card .bt i{width:6px;height:6px;border-radius:50%;background:var(--coral);flex:none}
+.b-card .mini-table{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:rgba(14,20,36,.12);border-radius:5px;overflow:hidden;margin-top:4px}
+.b-card .mini-table i{height:10px;background:#fff}
+.b-card .mini-table i:nth-child(-n+3){background:#e6ebff}
+.b-card .thumb{height:52px;border-radius:6px;margin-top:4px;background:linear-gradient(135deg,#edf2ff,#b6c3ff);position:relative}
+.b-card .thumb::after{content:"";position:absolute;right:7px;top:6px;width:11px;height:11px;border-radius:50%;background:#ff9389}
+.b-card .code{font-family:var(--mono);font-size:8.5px;color:var(--peri-ink);background:var(--bg);border-radius:5px;padding:5px 7px;margin-top:4px;display:block}
+.b-card .swatches{display:flex;gap:5px;margin-top:5px}
+.b-card .swatches i{width:18px;height:18px;border-radius:6px;border:1px solid rgba(14,20,36,.08)}
+.b-card.tall{grid-row:span 2}
+
+/* ---- SCENE 5 : to your AI (11s) ---- */
+.s5 .mwin{inset:24px;border-radius:18px}
+.s5 .mcp-chip{margin-left:auto;display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;
+  background:var(--peri-dim);border:1px solid rgba(147,167,255,.4);font-family:var(--mono);font-size:9px;color:var(--peri-ink);letter-spacing:.06em}
+.s5 .mcp-chip i{width:5px;height:5px;border-radius:50%;background:#346538;animation:pulse 2s var(--spring) infinite}
+.s5-body{padding:18px;display:flex;flex-direction:column;gap:12px;font-size:12px}
+.s5-user{align-self:flex-end;max-width:84%;background:#edf2ff;border:1px solid rgba(147,167,255,.3);
+  border-radius:13px 13px 4px 13px;padding:10px 14px;line-height:1.55;color:var(--ink)}
+.typing{display:inline;font-size:12px}
+.typing i{font-style:normal;opacity:0}
+.tool-call{align-self:flex-start;display:flex;align-items:center;gap:9px;padding:8px 13px;border-radius:10px;
+  background:var(--bg);border:1px solid var(--hair);
+  font-family:var(--mono);font-size:10.5px;color:var(--muted);
+  opacity:0;transform:translateY(10px);animation:rise1 11s var(--spring) infinite}
+.tool-call b{color:var(--peri-ink);font-weight:500}
+.spin-wrap{position:relative;width:13px;height:13px;flex:none}
+.spinner{position:absolute;inset:0;border-radius:50%;border:1.5px solid rgba(147,167,255,.35);border-top-color:var(--peri-ink);
+  animation:spin 1s linear infinite, spinhide 11s steps(1) infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes spinhide{0%,38%{opacity:1}39%,100%{opacity:0}}
+.tickmark{position:absolute;inset:0;opacity:0;animation:tickshow 11s steps(1) infinite}
+@keyframes tickshow{0%,38%{opacity:0}39%,100%{opacity:1}}
+@keyframes rise1{0%,26%{opacity:0;transform:translateY(10px)}31%,96%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(10px)}}
+.verb-card{position:relative;align-self:flex-start;width:100%;border-radius:14px;padding:4px;
+  background:var(--white);border:1px solid var(--hair-strong);box-shadow:var(--shadow-card);
+  opacity:0;transform:translateY(14px);animation:rise2 11s var(--spring) infinite}
+@keyframes rise2{0%,41%{opacity:0;transform:translateY(14px)}47%,96%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(14px)}}
+.verb-core{border-radius:11px;background:var(--bg-2);color:var(--ink);padding:13px 15px;position:relative;overflow:hidden;border:1px solid rgba(14,20,36,.04)}
+.verb-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.verb-head .pin-dot{width:7px;height:7px;border-radius:50%;background:var(--coral)}
+.verb-head em{font-style:normal;font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.verb-head .ts{margin-left:auto;font-family:var(--mono);font-size:8.5px;color:var(--faint)}
+.verb-text{font-family:var(--mono);font-size:10.5px;line-height:1.65;color:var(--ink);
+  clip-path:inset(0 100% 0 0);animation:wipe 11s var(--snap) infinite}
+@keyframes wipe{0%,46%{clip-path:inset(0 100% 0 0)}62%,100%{clip-path:inset(0 0 0 0)}}
+.stamp{position:absolute;right:11px;bottom:9px;padding:4px 9px;border-radius:7px;
+  border:1.5px solid var(--coral-ink);color:var(--coral-ink);
+  font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;font-weight:500;
+  opacity:0;transform:rotate(8deg) scale(1.6);animation:stampin 11s var(--spring) infinite}
+@keyframes stampin{0%,62%{opacity:0;transform:rotate(8deg) scale(1.6)}66%,96%{opacity:1;transform:rotate(-4deg) scale(1)}100%{opacity:0}}
+.s5-ai{align-self:flex-start;font-size:11.5px;color:var(--muted);line-height:1.5;display:flex;gap:8px;align-items:center;
+  opacity:0;animation:rise3 11s var(--spring) infinite}
+.s5-ai i{flex:none;width:15px;height:15px;border-radius:5px;background:linear-gradient(135deg,#93a7ff,#d86f69)}
+@keyframes rise3{0%,68%{opacity:0;transform:translateY(8px)}73%,96%{opacity:1;transform:translateY(0)}100%{opacity:0}}
+
+/* ============================================================
+   NOT MEMORY — comparison
+   ============================================================ */
+.notmem{text-align:center}
+.notmem .h-display{margin:26px 0 18px}
+.notmem .h-display .ghost{color:var(--faint)}
+.notmem .lede{max-width:600px;margin:0 auto 70px}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:26px;text-align:left}
+.cmp{border-radius:var(--r-shell);padding:7px;border:1px solid var(--hair);background:var(--white);box-shadow:var(--shadow-soft)}
+.cmp .core{border-radius:var(--r-core);padding:30px 30px 26px;min-height:300px;position:relative;overflow:hidden;border:1px solid rgba(14,20,36,.04)}
+.cmp-mem .core{background:#f1efe8}
+.cmp-pin .core{background:var(--bg-2)}
+.cmp-label{display:flex;align-items:center;gap:9px;font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;margin-bottom:24px}
+.cmp-mem .cmp-label{color:var(--faint)}
+.cmp-pin .cmp-label{color:var(--coral-ink)}
+.cmp-label i{width:6px;height:6px;border-radius:50%;background:currentColor}
+.cmp-mem .text{font-size:15.5px;line-height:1.85;color:var(--muted)}
+.swap{position:relative;display:inline-grid;vertical-align:bottom;text-align:center}
+.swap i{font-style:normal;grid-area:1/1;white-space:nowrap;color:var(--peri-ink);opacity:0;filter:blur(4px);transform:translateY(6px);
+  animation:swapfade 7s var(--expo) infinite}
+.swap i:nth-child(2){animation-delay:3.5s}
+@keyframes swapfade{0%,8%{opacity:0;filter:blur(4px);transform:translateY(6px)}14%,44%{opacity:1;filter:blur(0);transform:translateY(0)}52%,100%{opacity:0;filter:blur(4px);transform:translateY(-6px)}}
+.cmp .verdict{position:absolute;left:30px;bottom:22px;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em}
+.cmp-mem .verdict{color:var(--faint)}
+.cmp-pin .verdict{color:var(--coral-ink)}
+.cmp-pin .text{font-family:var(--mono);font-size:13.5px;line-height:1.85;color:var(--ink)}
+.cmp-pin .text .q{color:var(--coral-ink)}
+.cmp-pin .sealed{position:absolute;right:24px;bottom:18px;padding:5px 11px;border-radius:8px;border:1.5px solid var(--coral-ink);
+  color:var(--coral-ink);font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;transform:rotate(-4deg)}
+
+/* ============================================================
+   BENTO
+   ============================================================ */
+.bento-head{max-width:620px;margin-bottom:64px}
+.bento-head h2{margin:22px 0 18px}
+.bento{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
+.cell{border-radius:var(--r-shell);padding:6px;background:var(--white);border:1px solid var(--hair);
+  box-shadow:0 14px 40px -20px rgba(14,20,36,.14);
+  transition:transform .6s var(--spring),box-shadow .6s var(--spring)}
+.cell:hover{transform:translateY(-5px);box-shadow:var(--shadow-soft)}
+.cell .core{height:100%;border-radius:var(--r-core);background:var(--bg-2);padding:28px;
+  display:flex;flex-direction:column;gap:12px;border:1px solid rgba(14,20,36,.04)}
+.cell h3{font-family:var(--display);font-weight:600;font-size:19px;letter-spacing:-.01em}
+.cell p{font-size:13.5px;color:var(--muted);line-height:1.65}
+.cell .ico{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;margin-bottom:4px;
+  background:var(--peri-dim);border:1px solid rgba(147,167,255,.35)}
+.cell .ico.warm{background:var(--coral-dim);border-color:rgba(216,111,105,.3)}
+.c-span-7{grid-column:span 7}.c-span-5{grid-column:span 5}.c-span-4{grid-column:span 4}
+.tool-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:10px}
+.tool-chips span{font-family:var(--mono);font-size:11px;color:var(--peri-ink);padding:6px 12px;border-radius:8px;
+  background:var(--peri-dim);border:1px solid rgba(147,167,255,.35);
+  transition:transform .4s var(--spring),background .4s var(--spring)}
+.tool-chips span:hover{transform:translateY(-2px);background:rgba(147,167,255,.28)}
+
+/* ============================================================
+   FINAL CTA + FOOTER
+   ============================================================ */
+.final{text-align:center;padding-bottom:60px}
+.final .h-display{margin:26px 0 20px}
+.final .lede{max-width:520px;margin:0 auto 44px}
+.final-meta{margin-top:24px;display:flex;gap:22px;justify-content:center;flex-wrap:wrap;
+  font-family:var(--mono);font-size:11.5px;color:var(--faint);letter-spacing:.05em}
+footer{border-top:1px solid var(--hair);padding:34px 0 46px}
+.foot{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.foot .brand{display:flex;align-items:center;gap:9px;font-family:var(--display);font-weight:600;font-size:15px}
+.foot .brand img{width:20px;height:20px}
+.foot nav{display:flex;gap:24px}
+.foot a{color:var(--muted);text-decoration:none;font-size:13px;transition:color .35s var(--spring)}
+.foot a:hover{color:var(--ink)}
+.foot .fine{width:100%;margin-top:10px;font-size:11.5px;color:var(--faint)}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media(max-width:1320px){
+  .sp-1{left:-60px}.sp-3{left:-30px}.sp-2{right:-70px}.sp-4{right:-40px}
+}
+@media(max-width:1024px){
+  .sticky-pin{display:none}
+  .canvas-grid{grid-template-columns:1fr;gap:0}
+  .stage-col{position:sticky;top:74px;z-index:5;order:-1;
+    background:var(--bg);padding-bottom:14px;border-radius:0 0 24px 24px}
+  .step{min-height:86vh;align-items:flex-start;padding-top:calc(74px + 74vw)}
+  .step-card{background:var(--white);border:1px solid var(--hair);border-radius:18px;padding:22px 24px;box-shadow:var(--shadow-card)}
+  .compare{grid-template-columns:1fr}
+  .c-span-7,.c-span-5,.c-span-4{grid-column:span 12}
+}
+@media(max-width:880px){
+  .nav-links,.nav .nav-cta{display:none}
+  .burger{display:block}
+  .nav{left:24px;right:24px;transform:none;justify-content:space-between}
+}
+@media(max-width:768px){
+  .wrap{padding:0 20px}
+  .hero{padding-top:150px}
+  .section{padding:88px 0}
+  .hero-keys{gap:7px}
+  .kc{min-width:44px;height:44px;font-size:15px}
+  .cmp .core{min-height:0;padding:24px 22px 64px}
+  .cell .core{padding:24px 22px}
+  .menu{padding:0 28px}
+  .step{min-height:72vh}
+}
+
+/* reduced motion: static, legible end-states */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+  .rv{opacity:1;transform:none;filter:none}
+  .typing i{opacity:1 !important}
+  .verb-text{clip-path:inset(0 0 0 0)}
+  .kline .khl{transform:scaleX(1)}
+  .s2-ring,.s3-ring{opacity:1;transform:none}
+  .cursor,.fly,.toast{display:none}
+  .b-card{opacity:1;transform:none}
+  .tool-call,.verb-card,.s5-ai{opacity:1;transform:none}
+  .stamp{opacity:1;transform:rotate(-4deg)}
+  .dock .count .reel{transform:translateY(-22px)}
+  .dock .rows i.new{transform:scaleX(1);opacity:1}
+}
+</style>
+</head>
+<body>
+
+<div class="stage-bg" aria-hidden="true">
+  <div class="orb orb-a"></div>
+  <div class="orb orb-b"></div>
+  <div class="orb orb-c"></div>
+</div>
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ======================= NAV ======================= -->
+<header class="nav" id="nav">
+  <a class="nav-logo" href="#top">
+    <img src="assets/icon.svg" alt="Pin It logo" />
+    Pin It
+  </a>
+  <nav class="nav-links">
+    <a href="#flow">How it works</a>
+    <a href="#why">Why Pin It</a>
+  </nav>
+  <a class="nav-cta" href="https://github.com/johnnyzhoujz/pin-it-public">
+    GitHub
+    <span class="orb-btn"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 9.5L9.5 2.5M9.5 2.5H4M9.5 2.5V8" stroke="#fbfaf4" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+  </a>
+  <button class="burger" id="burger" aria-label="Menu"><span></span><span></span></button>
+</header>
+
+<div class="menu" id="menu">
+  <a href="#flow"><i>How it works</i></a>
+  <a href="#why"><i>Why Pin It</i></a>
+  <a href="https://github.com/johnnyzhoujz/pin-it-public"><i>View source ↗</i></a>
+</div>
+
+<!-- ======================= HERO ======================= -->
+<main id="top">
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-inner">
+
+      <div class="sticky-pin sp-1" data-depth="22"><span class="pinhead"></span><div class="face peach"><span class="tag">kept from claude</span>"Ship the smallest thing that proves the loop."</div></div>
+      <div class="sticky-pin sp-2" data-depth="34"><span class="pinhead"></span><div class="face lavender"><span class="tag">kept · screenshot</span>Hero concept v3<span class="shot"></span></div></div>
+      <div class="sticky-pin sp-3" data-depth="18"><span class="pinhead"></span><div class="face butter"><span class="tag">kept from chatgpt</span>Q3 channels<span class="mini-table"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div></div>
+      <div class="sticky-pin sp-4" data-depth="28"><span class="pinhead"></span><div class="face sage"><span class="tag">kept · palette</span>Warm cream system<span class="swatch"><i style="background:#fbfaf4"></i><i style="background:#b6c3ff"></i><i style="background:#ff9389"></i><i style="background:#0e1424"></i></span></div></div>
+
+      <h1 class="h-display rv">Keep the<br/><span class="underlined">exact words<svg viewBox="0 0 600 40" preserveAspectRatio="none"><path d="M8 30 C 140 12, 420 8, 592 24"/></svg></span>.</h1>
+
+      <p class="lede rv" style="--d:120ms">Somewhere in a long AI conversation is a sentence you'll need again. Pin It saves it with one hotkey, <b>exactly as written</b>, and serves it back to Claude or any AI tool when it's time to build.</p>
+
+      <div class="hero-ctas rv" style="--d:220ms">
+        <a class="btn btn-primary" href="https://github.com/johnnyzhoujz/pin-it-public">
+          View source
+          <span class="orb-btn"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 9.5L9.5 2.5M9.5 2.5H4M9.5 2.5V8" stroke="#fbfaf4" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </a>
+        <a class="btn btn-ghost" href="#flow">
+          See it work
+          <span class="orb-btn"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2.5V9.5M6 9.5L2.5 6M6 9.5L9.5 6" stroke="#0e1424" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </a>
+      </div>
+
+      <div class="rv" style="--d:320ms">
+        <div class="hero-keys" aria-hidden="true">
+          <span class="kc"><small>cmd</small>⌘</span><span class="plus">+</span><span class="kc"><small>shift</small>⇧</span><span class="plus">+</span><span class="kc">I</span>
+        </div>
+        <p class="hero-keys-label">the only shortcut you need to learn</p>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="marquee-band rv" style="--d:200ms">
+    <div class="marquee" aria-hidden="true">
+      <span>pins from Claude</span><span>pins from ChatGPT</span><span>pins from Codex</span><span>pins from Cursor</span><span>pins from Claude Code</span><span>pins from your browser</span><span>pins from Figma</span><span>pins from the terminal</span><span>pins from anywhere</span>
+      <span>pins from Claude</span><span>pins from ChatGPT</span><span>pins from Codex</span><span>pins from Cursor</span><span>pins from Claude Code</span><span>pins from your browser</span><span>pins from Figma</span><span>pins from the terminal</span><span>pins from anywhere</span>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= THE CANVAS ======================= -->
+<section class="section" id="flow">
+  <div class="wrap">
+    <div class="canvas-head">
+      <span class="eyebrow rv"><span class="dot"></span>How it works</span>
+      <h2 class="h-section rv" style="--d:80ms">One hotkey in.<br/>One question out.</h2>
+      <p class="lede rv" style="--d:160ms">Text, tables, and screenshots go to your board with a single press. They come back through Claude, or with a plain old copy. Scroll through the loop.</p>
+    </div>
+
+    <div class="canvas-grid">
+      <div class="steps-col">
+        <div class="step" data-scene="0">
+          <div class="step-card">
+            <span class="step-num">01 · TEXT</span>
+            <h3>Keep the good part.</h3>
+            <p>Answers run long, and the paragraph you'll need <b>word for word</b> is buried in the middle. Select it, press <span class="mono">⌘⇧I</span>, and keep moving. The rest can scroll away.</p>
+          </div>
+        </div>
+        <div class="step" data-scene="1">
+          <div class="step-card">
+            <span class="step-num">02 · TABLES</span>
+            <h3>Tables stay tables.</h3>
+            <p>Pin a table and it stays a table. <b>Headers, rows, and alignment arrive intact</b>, ready to use the day you need them.</p>
+          </div>
+        </div>
+        <div class="step" data-scene="2">
+          <div class="step-card">
+            <span class="step-num">03 · IMAGES</span>
+            <h3>Pixels too.</h3>
+            <p>Screenshots and generated images are <b>pinned at full resolution</b>. The picture itself lives on your board, ready to send back into any conversation.</p>
+          </div>
+        </div>
+        <div class="step" data-scene="3">
+          <div class="step-card">
+            <span class="step-num">04 · THE BOARD</span>
+            <h3>Everything on one board.</h3>
+            <p>Every pin lands on a single board you can <b>search, reorder, and retitle</b>. When it's time to build, your raw material is already gathered.</p>
+          </div>
+        </div>
+        <div class="step" data-scene="4">
+          <div class="step-card">
+            <span class="step-num">05 · BUILD</span>
+            <h3>Then build with it.</h3>
+            <p>Ask Claude for the pin you need and it arrives <b>character for character</b>. Prefer to do it yourself? Copy any pin straight off the board.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage-col rv">
+        <div class="canvas-shell">
+          <div class="canvas-core">
+            <div id="stage-fit">
+              <div class="canvas-stage" id="stage" data-scene="0">
+
+                <!-- SCENE 1 : long answer → select → pin -->
+                <div class="scene s1 on">
+                  <div class="mwin">
+                    <div class="mbar"><i></i><i></i><i></i><em>claude.ai · pricing page draft</em></div>
+                    <div class="s1-clip">
+                      <div class="s1-scroll">
+                        <div class="s1-user">Tighten the pricing section copy?</div>
+                        <div class="s1-ai">
+                          <span class="ai-tag"><i></i>Assistant</span>
+                          <p>Three ways to frame it, depending on how bold you want the page to feel:</p>
+                          <p class="hline">1. Lead with the free tier</p>
+                          <span class="bar w1"></span><span class="bar w4"></span><span class="bar w2"></span>
+                          <p class="hline">2. The one sentence version</p>
+                          <div class="keep">
+                            <span class="kline"><span class="khl"></span><span class="kt">"Start free. Stay free until it pays for itself. After that</span></span>
+                            <span class="kline"><span class="khl"></span><span class="kt">it's $12 a seat, flat, with no tiers to decode."</span></span>
+                            <span class="cursor s1-cursor"><svg width="17" height="22" viewBox="0 0 17 22"><path d="M1.5 1.5 L1.5 17 L5.6 13.5 L8.1 19.6 L11 18.3 L8.5 12.3 L14.2 12.3 Z" fill="#0e1424" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
+                          </div>
+                          <span class="bar w4"></span><span class="bar w3"></span>
+                          <p class="hline">3. Anchor against the competition</p>
+                          <span class="bar w1"></span><span class="bar w2"></span><span class="bar w4"></span><span class="bar w3"></span>
+                          <span class="bar w1"></span><span class="bar w2"></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="fly"><div class="core"><span class="tag">pinned just now</span>"Start free. Stay free until it pays for itself…"</div></div>
+                  <div class="dock">
+                    <div class="core">
+                      <span class="pin-ico"><svg width="15" height="15" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="12.5" r="8.5" fill="#d86f69"/><rect x="14.9" y="19" width="2.2" height="9.5" rx="1.1" fill="#93a7ff"/></svg></span>
+                      <span class="count"><span class="reel">12<br/>13</span></span>
+                      <span class="lbl">pins</span>
+                      <span class="rows"><i class="new"></i><i></i><i></i><i></i></span>
+                    </div>
+                  </div>
+                  <div class="demo-keys" aria-hidden="true"><span class="k">⌘</span><span class="k">⇧</span><span class="k">I</span></div>
+                  <div class="toast"><b>⌘⇧I</b> · selection pinned</div>
+                </div>
+
+                <!-- SCENE 2 : table -->
+                <div class="scene s2">
+                  <div class="mwin">
+                    <div class="mbar"><i></i><i></i><i></i><em>chatgpt.com · Q3 channel plan</em></div>
+                    <div class="s2-body">
+                      <p class="doc-title">Q3 acquisition channels, ranked by the math</p>
+                      <span class="bar w1"></span><span class="bar w2"></span>
+                      <div class="s2-tablewrap">
+                        <table class="s2-table">
+                          <tr><th>Channel</th><th>CAC</th><th>Verdict</th></tr>
+                          <tr><td>MCP directories</td><td>$0</td><td><span class="ok">start here</span></td></tr>
+                          <tr><td>r/macapps</td><td>$0</td><td><span class="ok">week one</span></td></tr>
+                          <tr><td>Product Hunt</td><td>$0</td><td><span class="meh">one spike</span></td></tr>
+                          <tr><td>Paid social</td><td>$74</td><td><span class="meh">skip for now</span></td></tr>
+                        </table>
+                        <span class="s2-ring"></span>
+                        <span class="cursor s2-cursor"><svg width="17" height="22" viewBox="0 0 17 22"><path d="M1.5 1.5 L1.5 17 L5.6 13.5 L8.1 19.6 L11 18.3 L8.5 12.3 L14.2 12.3 Z" fill="#0e1424" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
+                      </div>
+                      <span class="bar w4" style="margin-top:12px"></span><span class="bar w3"></span>
+                    </div>
+                  </div>
+                  <div class="fly"><div class="core"><span class="tag">pinned · table</span>Q3 channels<span class="mini-table"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div></div>
+                  <div class="dock">
+                    <div class="core">
+                      <span class="pin-ico"><svg width="15" height="15" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="12.5" r="8.5" fill="#d86f69"/><rect x="14.9" y="19" width="2.2" height="9.5" rx="1.1" fill="#93a7ff"/></svg></span>
+                      <span class="count"><span class="reel">13<br/>14</span></span>
+                      <span class="lbl">pins</span>
+                      <span class="rows"><i class="new"></i><i></i><i></i><i></i></span>
+                    </div>
+                  </div>
+                  <div class="demo-keys" aria-hidden="true"><span class="k">⌘</span><span class="k">⇧</span><span class="k">I</span></div>
+                  <div class="toast"><b>⌘⇧I</b> · table pinned, format intact</div>
+                </div>
+
+                <!-- SCENE 3 : image -->
+                <div class="scene s3">
+                  <div class="mwin">
+                    <div class="mbar"><i></i><i></i><i></i><em>moodboard · hero options</em></div>
+                    <div class="s3-body">
+                      <p class="doc-title">Option B, warm gradient with floating UI</p>
+                      <div class="s3-frame">
+                        <div class="s3-shot">
+                          <span class="sun"></span>
+                          <span class="ridge"></span>
+                          <span class="ridge b"></span>
+                          <span class="ui"><i></i><i></i></span>
+                        </div>
+                        <span class="s3-ring"></span>
+                        <span class="cursor s3-cursor"><svg width="17" height="22" viewBox="0 0 17 22"><path d="M1.5 1.5 L1.5 17 L5.6 13.5 L8.1 19.6 L11 18.3 L8.5 12.3 L14.2 12.3 Z" fill="#0e1424" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
+                      </div>
+                      <p class="s3-cap">Generated 14:32 · 1920×1080 · v3 of 7</p>
+                    </div>
+                  </div>
+                  <div class="fly"><div class="core"><span class="tag">pinned · image</span>Hero option B<span class="thumb"></span></div></div>
+                  <div class="dock">
+                    <div class="core">
+                      <span class="pin-ico"><svg width="15" height="15" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="12.5" r="8.5" fill="#d86f69"/><rect x="14.9" y="19" width="2.2" height="9.5" rx="1.1" fill="#93a7ff"/></svg></span>
+                      <span class="count"><span class="reel">14<br/>15</span></span>
+                      <span class="lbl">pins</span>
+                      <span class="rows"><i class="new"></i><i></i><i></i><i></i></span>
+                    </div>
+                  </div>
+                  <div class="demo-keys" aria-hidden="true"><span class="k">⌘</span><span class="k">⇧</span><span class="k">I</span></div>
+                  <div class="toast"><b>⌘⇧I</b> · image pinned, full res</div>
+                </div>
+
+                <!-- SCENE 4 : board -->
+                <div class="scene s4">
+                  <div class="mwin">
+                    <div class="mbar"><i></i><i></i><i></i><em>Pin It · Board</em><span class="s4-bar-right">15 pins</span></div>
+                    <div class="s4-search">Search pins…<span class="scaret"></span></div>
+                    <div class="s4-grid">
+                      <div class="b-card tall" style="--bd:.0s">
+                        <span class="bt"><i></i>Pricing copy</span>
+                        "Start free. Stay free until it pays for itself. After that it's $12 a seat, flat, with no tiers to decode."
+                      </div>
+                      <div class="b-card" style="--bd:.12s">
+                        <span class="bt"><i></i>Q3 channels</span>
+                        <span class="mini-table"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+                      </div>
+                      <div class="b-card" style="--bd:.24s">
+                        <span class="bt"><i></i>Hero option B</span>
+                        <span class="thumb"></span>
+                      </div>
+                      <div class="b-card" style="--bd:.36s">
+                        <span class="bt"><i></i>Launch constraint</span>
+                        "No tiers to decode." Keep this phrasing everywhere.
+                      </div>
+                      <div class="b-card" style="--bd:.48s">
+                        <span class="bt"><i></i>Sidebar snippet</span>
+                        <span class="code">const board = pins.filter(kept)</span>
+                      </div>
+                      <div class="b-card" style="--bd:.6s">
+                        <span class="bt"><i></i>Warm cream palette</span>
+                        <span class="swatches"><i style="background:#fbfaf4"></i><i style="background:#b6c3ff"></i><i style="background:#ff9389"></i><i style="background:#0e1424"></i></span>
+                      </div>
+                      <div class="b-card" style="--bd:.72s">
+                        <span class="bt"><i></i>CTA wording</span>
+                        "Don't let it scroll away."
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- SCENE 5 : to your AI -->
+                <div class="scene s5">
+                  <div class="mwin">
+                    <div class="mbar"><i></i><i></i><i></i><em>Claude</em><span class="mcp-chip"><i></i>pin-it mcp</span></div>
+                    <div class="s5-body">
+                      <div class="s5-user"><span class="typing" id="typed">Use the pricing line I pinned. Exact wording please.</span></div>
+                      <div class="tool-call">
+                        <span class="spin-wrap"><span class="spinner"></span><span class="tickmark"><svg width="13" height="13" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5.4" stroke="#346538" stroke-width="1"/><path d="M3.6 6.2L5.3 7.8L8.5 4.4" stroke="#346538" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+                        <span><b>search_pins</b>("pricing")&nbsp;→&nbsp;1 match</span>
+                      </div>
+                      <div class="verb-card">
+                        <div class="verb-core">
+                          <div class="verb-head"><span class="pin-dot"></span><em>pin · pricing copy</em><span class="ts">kept 2 days ago</span></div>
+                          <p class="verb-text">"Start free. Stay free until it pays for itself. After that it's $12 a seat, flat, with no tiers to decode."</p>
+                          <span class="stamp">VERBATIM</span>
+                        </div>
+                      </div>
+                      <div class="s5-ai"><i></i>Dropped in unchanged. Zero edits, zero drift.</div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= NOT MEMORY ======================= -->
+<section class="section notmem" id="why">
+  <div class="wrap">
+    <span class="eyebrow warm rv"><span class="dot"></span>The difference</span>
+    <h2 class="h-display rv" style="--d:80ms"><span class="ghost">Memory keeps the gist.</span><br/>Pins keep the words.</h2>
+    <p class="lede rv" style="--d:160ms">AI memory compresses what you said into what it thinks you meant, and every recall rebuilds it a little differently. A pin is the thing itself, character for character, for as long as it sits on your board.</p>
+
+    <div class="compare">
+      <div class="cmp cmp-mem rv" style="--d:120ms">
+        <div class="core">
+          <div class="cmp-label"><i></i>What memory recalls</div>
+          <p class="text">The user wants pricing that
+            <span class="swap"><i>starts free</i><i>is mostly free</i></span>
+            and costs
+            <span class="swap"><i>around $12</i><i>roughly $10–15</i></span>
+            per seat, with
+            <span class="swap"><i>no tiers</i><i>simple tiers</i></span>
+            and something
+            <span class="swap"><i>flat and clear</i><i>easy to decode</i></span>.
+          </p>
+          <span class="verdict">a reconstruction · drifts every recall</span>
+        </div>
+      </div>
+      <div class="cmp cmp-pin rv" style="--d:220ms">
+        <div class="core">
+          <div class="cmp-label"><i></i>What Pin It returns</div>
+          <p class="text"><span class="q">"</span>Start free. Stay free until it pays for itself. After that it's $12 a seat, flat, with no tiers to decode.<span class="q">"</span></p>
+          <span class="verdict">the words themselves</span>
+          <span class="sealed">0 BYTES CHANGED</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= BENTO ======================= -->
+<section class="section" id="more">
+  <div class="wrap">
+    <div class="bento-head">
+      <span class="eyebrow rv"><span class="dot"></span>The details</span>
+      <h2 class="h-section rv" style="--d:80ms">Small on purpose.</h2>
+      <p class="lede rv" style="--d:160ms">Pin It does one job carefully and leaves the rest of your setup alone.</p>
+    </div>
+    <div class="bento">
+      <div class="cell c-span-7 rv">
+        <div class="core">
+          <span class="ico"><svg width="17" height="17" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6.5" stroke="#4d61c9" stroke-width="1.1"/><circle cx="9" cy="9" r="2.4" stroke="#4d61c9" stroke-width="1.1"/><path d="M9 2.5V5M9 13V15.5M2.5 9H5M13 9H15.5" stroke="#4d61c9" stroke-width="1.1" stroke-linecap="round"/></svg></span>
+          <h3>MCP built in</h3>
+          <p>Pin It runs its own MCP server. Claude, Cursor, and any other MCP client can list, search, and pull your pins mid conversation. The connection is read only, so your AI can quote the board but can never edit it.</p>
+          <div class="tool-chips">
+            <span>list_pins</span><span>search_pins</span><span>get_packet</span><span>get_pin_image</span>
+          </div>
+        </div>
+      </div>
+      <div class="cell c-span-5 rv" style="--d:90ms">
+        <div class="core">
+          <span class="ico warm"><svg width="17" height="17" viewBox="0 0 18 18" fill="none"><path d="M9 16C9 16 3.5 11.5 3.5 7.5C3.5 4.5 6 2.5 9 2.5C12 2.5 14.5 4.5 14.5 7.5C14.5 11.5 9 16 9 16Z" stroke="#d86f69" stroke-width="1.1" stroke-linejoin="round"/><circle cx="9" cy="7.5" r="1.8" stroke="#d86f69" stroke-width="1.1"/></svg></span>
+          <h3>You choose every pin</h3>
+          <p>Pin It records nothing on its own. It keeps what you select the moment you press the hotkey, and it sits idle the rest of the time.</p>
+        </div>
+      </div>
+      <div class="cell c-span-4 rv">
+        <div class="core">
+          <span class="ico"><svg width="17" height="17" viewBox="0 0 18 18" fill="none"><path d="M9 2.5L3 5.5V9C3 12.5 5.5 15 9 16C12.5 15 15 12.5 15 9V5.5L9 2.5Z" stroke="#4d61c9" stroke-width="1.1" stroke-linejoin="round"/><path d="M6.5 9L8.2 10.7L11.5 7.2" stroke="#4d61c9" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <h3>Lives on your Mac</h3>
+          <p>Your board is a folder on your machine. There is no account to create, and nothing syncs anywhere unless you send it yourself.</p>
+        </div>
+      </div>
+      <div class="cell c-span-4 rv" style="--d:90ms">
+        <div class="core">
+          <span class="ico"><svg width="17" height="17" viewBox="0 0 18 18" fill="none"><rect x="2.5" y="3.5" width="13" height="10" rx="2" stroke="#4d61c9" stroke-width="1.1"/><circle cx="6.5" cy="7" r="1.2" stroke="#4d61c9" stroke-width="1"/><path d="M3.5 12L7.5 9L11 11.5L15 8.5" stroke="#4d61c9" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <h3>Images keep their pixels</h3>
+          <p>Screenshots stay attached to their pins, and <span class="mono" style="font-size:12px;color:var(--peri-ink)">get_pin_image</span> hands the original file back to your AI on request.</p>
+        </div>
+      </div>
+      <div class="cell c-span-4 rv" style="--d:180ms">
+        <div class="core">
+          <span class="ico warm"><svg width="17" height="17" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6.5" stroke="#d86f69" stroke-width="1.1"/><path d="M6.5 9.5C6.5 9.5 7.5 11 9 11C10.5 11 11.5 9.5 11.5 9.5" stroke="#d86f69" stroke-width="1.1" stroke-linecap="round"/><circle cx="6.8" cy="7" r=".8" fill="#d86f69"/><circle cx="11.2" cy="7" r=".8" fill="#d86f69"/></svg></span>
+          <h3>Free for individuals</h3>
+          <p>The capture, the board, and the MCP server are free for individual use. That's the whole pitch.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= FINAL CTA ======================= -->
+<section class="section final">
+  <div class="wrap">
+    <span class="eyebrow warm rv"><span class="dot"></span>Pin It for macOS</span>
+    <h2 class="h-display rv" style="--d:80ms">Save the parts<br/>worth building from.</h2>
+    <p class="lede rv" style="--d:160ms">The next time an AI writes the exact right sentence, you'll have somewhere to put it.</p>
+    <div class="hero-ctas rv" style="--d:240ms">
+      <a class="btn btn-primary" href="https://github.com/johnnyzhoujz/pin-it-public">
+        View source
+        <span class="orb-btn"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 9.5L9.5 2.5M9.5 2.5H4M9.5 2.5V8" stroke="#fbfaf4" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </a>
+      <a class="btn btn-ghost" href="https://github.com/johnnyzhoujz/pin-it-public">
+        View on GitHub
+        <span class="orb-btn"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 9.5L9.5 2.5M9.5 2.5H4M9.5 2.5V8" stroke="#0e1424" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </a>
+    </div>
+    <div class="final-meta rv" style="--d:320ms">
+      <span>free</span><span>macOS 13+</span><span>local-first</span><span>MCP built in</span>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span class="brand">
+      <img src="assets/icon.svg" alt="" />
+      Pin It
+    </span>
+    <nav>
+      <a href="#flow">How it works</a>
+      <a href="#why">Why Pin It</a>
+      <a href="https://github.com/johnnyzhoujz/pin-it-public">GitHub</a>
+    </nav>
+    <span class="fine">© <span id="yr">2026</span> Pin It · Keep the exact words.</span>
+  </div>
+</footer>
+
+<script>
+/* ---------- scroll reveals ---------- */
+const io=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}
+  });
+},{threshold:.18,rootMargin:'0px 0px -8% 0px'});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+/* ---------- mobile menu morph ---------- */
+const burger=document.getElementById('burger'),menu=document.getElementById('menu');
+burger.addEventListener('click',()=>{
+  burger.classList.toggle('open');menu.classList.toggle('open');
+  document.body.style.overflow=menu.classList.contains('open')?'hidden':'';
+});
+menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
+  burger.classList.remove('open');menu.classList.remove('open');document.body.style.overflow='';
+}));
+
+/* ---------- stage scaler ---------- */
+(function(){
+  const box=document.getElementById('stage-fit');
+  const stage=document.getElementById('stage');
+  const apply=()=>{stage.style.transform=`scale(${box.clientWidth/640})`;};
+  new ResizeObserver(apply).observe(box);
+  apply();
+})();
+
+/* ---------- typed message (scene 5): per-char WAAPI ---------- */
+const typed=document.getElementById('typed');
+if(typed && !matchMedia('(prefers-reduced-motion: reduce)').matches){
+  const text=typed.textContent;
+  typed.textContent='';
+  [...text].forEach(ch=>{
+    const s=document.createElement('i');
+    s.textContent=ch;
+    typed.appendChild(s);
+  });
+  /* chars type in from 6% of the 11s loop */
+  typed.querySelectorAll('i').forEach((s,i)=>{
+    const t0=(0.06+i*0.0021);
+    s.animate([
+      {opacity:0,offset:0},
+      {opacity:0,offset:Math.min(t0,.999)},
+      {opacity:1,offset:Math.min(t0+.001,.9995)},
+      {opacity:1,offset:.96},
+      {opacity:0,offset:.97},
+      {opacity:0,offset:1}
+    ],{duration:11000,iterations:Infinity});
+  });
+}
+
+/* ---------- scene switcher ---------- */
+(function(){
+  const stage=document.getElementById('stage');
+  const scenes=[...stage.querySelectorAll('.scene')];
+  const steps=[...document.querySelectorAll('.step')];
+  let current=0;
+  function setScene(i){
+    if(i===current)return;
+    current=i;
+    stage.dataset.scene=i;
+    scenes.forEach((sc,j)=>sc.classList.toggle('on',j===i));
+    steps.forEach((st,j)=>st.classList.toggle('active',j===i));
+    /* restart any WAAPI animations (typed chars) inside the activated scene */
+    const sc=scenes[i];
+    if(sc.getAnimations){
+      sc.getAnimations({subtree:true}).forEach(a=>{try{a.currentTime=0;a.play();}catch(e){}});
+    }
+  }
+  const sio=new IntersectionObserver(es=>{
+    es.forEach(e=>{
+      if(e.isIntersecting){
+        setScene(+e.target.dataset.scene);
+      }
+    });
+  },{rootMargin:'-42% 0px -42% 0px',threshold:0});
+  steps.forEach(st=>sio.observe(st));
+  steps[0].classList.add('active');
+})();
+
+/* ---------- hero parallax ---------- */
+const hero=document.querySelector('.hero');
+const pins=document.querySelectorAll('.sticky-pin');
+let raf=null;
+if(hero&&pins.length&&matchMedia('(pointer:fine)').matches){
+  hero.addEventListener('pointermove',e=>{
+    if(raf)return;
+    raf=requestAnimationFrame(()=>{
+      const r=hero.getBoundingClientRect();
+      const x=(e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5;
+      pins.forEach(p=>{
+        const d=+p.dataset.depth||20;
+        p.style.translate=`${-x*d}px ${-y*d}px`;
+      });
+      raf=null;
+    });
+  });
+}
+
+document.getElementById('yr').textContent=new Date().getFullYear();
+</script>
+</body>
+</html>

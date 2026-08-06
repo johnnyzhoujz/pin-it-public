@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+
+# Build and test output
+dist/
+dist-mcp/
+dist-native/
+release/
+release-dev/
+coverage/
+*.dmg
+*.zip
+*.log
+npm-debug.log*
+
+# Local app data
+electron-store/
+credentials.bin
+keeps.json
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+.vercel/
+.claude/
+.gstack/
+skills-lock.json
+*.cer
+*.key
+*.mobileprovision
+*.p12
+*.pem
+*.pfx
+
+# Generated landing-page artwork that is not used by site/index.html
+site/assets/atmospheric-backgrounds/
+site/assets/atmospheric-backgrounds-dark/
+site/assets/intro-pin-board-v2/
+site/assets/intro-pin-stack/
+
+# Operating-system files
+.DS_Store
