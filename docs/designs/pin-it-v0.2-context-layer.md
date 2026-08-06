@@ -57,7 +57,7 @@ deterministic. No accounts, no cloud, no nondeterministic middleman.
                               │ reads (torn-read retry)  │           │ electron-updater
                               ▼                          │           ▼ (signed) / notifier (unsigned)
                   MCP server (dist-mcp/pinit-mcp.mjs) ───┘     GitHub Releases
-                    stdio · list_pins / search_pins /          dmg + zip + latest-mac.yml
+                    stdio · list_pins / search_pins /          dmg + zip + justpinit-mac.yml
                     get_packet · pinit:// resources
                     clients: Claude Desktop / Code / Cursor
 ```
@@ -341,9 +341,9 @@ Added 2026-06-11 during eng review — user reversed the CEO-review deferral.
 - Auto-update: electron-updater with the GitHub publish provider. macOS
   targets stay `dmg` + `zip` (already configured, package.json:41-56) — the
   ZIP is what Squirrel.Mac updates from and is required for
-  `latest-mac.yml` generation. Release command (`npm run release` →
+  `justpinit-mac.yml` generation. Release command (`npm run release` →
   `electron-builder --publish always`, GH_TOKEN) uploads dmg + zip +
-  latest-mac.yml to GitHub Releases.
+  justpinit-mac.yml to GitHub Releases.
 - Three concrete package.json edits (eng review F4) — without these the
   signed build "works" but auto-update silently never finds releases:
   1. `afterPack: scripts/adhoc-sign-mac.cjs` (line 27) becomes conditional:
@@ -353,8 +353,9 @@ Added 2026-06-11 during eng review — user reversed the CEO-review deferral.
      DMG is signed alongside the app (electron-builder default once
      `identity` exists).
   3. `build.publish: [{ "provider": "github" }]` is added — this is what
-     makes electron-builder generate and upload `latest-mac.yml`; without a
-     publish block electron-updater has no manifest to check.
+     uses the `justpinit` channel so electron-builder generates and uploads
+     `justpinit-mac.yml`; without a publish block electron-updater has no
+     manifest to check.
 - Runtime guard: `autoUpdater.checkForUpdatesAndNotify()` on launch,
   fail-silent offline. Unsigned/dev builds skip autoUpdater entirely and fall
   back to the Base update notifier (same GitHub releases check, manual

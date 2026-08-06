@@ -21,6 +21,7 @@ it directly or bring it into an MCP-capable AI client.
 > Version 0.2.6 uses a new brand-neutral macOS application identity. When
 > upgrading from 0.2.5 or earlier, install the new DMG and grant macOS privacy
 > permissions again. Existing pins remain in the same local data directory.
+> Automatic updates resume normally after 0.2.6 is installed.
 
 ## What it does
 

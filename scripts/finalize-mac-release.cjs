@@ -6,6 +6,8 @@ const { buildBlockMap } = require("app-builder-lib/out/targets/blockmap/blockmap
 
 const ARCHITECTURES = ["x64", "arm64"];
 const EXTENSIONS = ["zip", "dmg"];
+const UPDATE_CHANNEL = "justpinit";
+const UPDATE_MANIFEST_FILENAME = `${UPDATE_CHANNEL}-mac.yml`;
 
 async function finalizeMacRelease({
   projectDir = path.join(__dirname, ".."),
@@ -30,7 +32,7 @@ async function finalizeMacRelease({
     artifacts,
     releaseDate
   });
-  const manifestPath = path.join(releaseDir, "latest-mac.yml");
+  const manifestPath = path.join(releaseDir, UPDATE_MANIFEST_FILENAME);
   await fs.writeFile(manifestPath, manifest, "utf8");
   const checksumPath = path.join(releaseDir, "SHA256SUMS.txt");
   await fs.writeFile(checksumPath, serializeChecksums(artifacts), "utf8");
@@ -153,6 +155,8 @@ if (require.main === module) {
 module.exports = {
   ARCHITECTURES,
   EXTENSIONS,
+  UPDATE_CHANNEL,
+  UPDATE_MANIFEST_FILENAME,
   finalizeMacRelease,
   renderArtifactName,
   serializeChecksums,
