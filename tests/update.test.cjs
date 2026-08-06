@@ -1,5 +1,6 @@
 const assert = require("node:assert/strict");
 const {
+  autoUpdateChannel,
   checkManualUpdate,
   compareVersions,
   hasDeveloperIdSignatureOutput,
@@ -7,6 +8,7 @@ const {
   latestReleaseUrl
 } = require("../electron/update.cjs");
 
+assert.equal(autoUpdateChannel, "justpinit");
 assert.equal(latestReleaseUrl, "https://api.github.com/repos/johnnyzhoujz/pin-it-public/releases/latest");
 
 assert.equal(compareVersions("0.2.0", "0.1.1"), 1);

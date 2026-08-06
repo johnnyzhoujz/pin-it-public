@@ -2,6 +2,8 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const {
+  UPDATE_CHANNEL,
+  UPDATE_MANIFEST_FILENAME,
   renderArtifactName,
   serializeChecksums,
   serializeManifest
@@ -13,6 +15,9 @@ for (const target of packageJson.build.mac.target) {
 }
 assert.match(packageJson.scripts["dist:mac:prod"], /--arm64 --x64$/);
 assert.match(packageJson.scripts.release, /--arm64 --x64 --publish always$/);
+assert.equal(packageJson.build.publish[0].channel, UPDATE_CHANNEL);
+assert.equal(UPDATE_CHANNEL, "justpinit");
+assert.equal(UPDATE_MANIFEST_FILENAME, "justpinit-mac.yml");
 assert.equal(renderArtifactName(packageJson, "arm64", "dmg"), "Pin-It-0.2.6-arm64.dmg");
 
 const artifacts = [

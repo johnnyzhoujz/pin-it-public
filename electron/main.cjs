@@ -22,7 +22,12 @@ const {
 const { screenshotCaptureArgs } = require("./screenshotCapture.cjs");
 const { generatePinTitle, openAIStatus } = require("./openaiHarness.cjs");
 const { isExternalHttpUrl, isTrustedRendererUrl } = require("./securityPolicy.cjs");
-const { checkManualUpdate, hasDeveloperIdSignatureOutput, isAutoUpdaterEligible } = require("./update.cjs");
+const {
+  autoUpdateChannel,
+  checkManualUpdate,
+  hasDeveloperIdSignatureOutput,
+  isAutoUpdaterEligible
+} = require("./update.cjs");
 
 const isDev = !app.isPackaged && process.env.KEEP_THAT_LOAD_DIST !== "1";
 const appChannel = resolveAppChannel({ isPackaged: app.isPackaged, packagedName: app.getName() });
@@ -1371,6 +1376,7 @@ async function checkForUpdates() {
       skipAutoUpdater
     })
   ) {
+    autoUpdater.channel = autoUpdateChannel;
     autoUpdater.autoDownload = true;
     try {
       await autoUpdater.checkForUpdatesAndNotify();

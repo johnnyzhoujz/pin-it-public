@@ -1,4 +1,5 @@
 const latestReleaseUrl = "https://api.github.com/repos/johnnyzhoujz/pin-it-public/releases/latest";
+const autoUpdateChannel = "justpinit";
 
 function compareVersions(left, right) {
   const leftParts = String(left || "0.0.0").replace(/^v/i, "").split(".").map((part) => Number.parseInt(part, 10) || 0);
@@ -70,6 +71,7 @@ async function checkManualUpdate({ currentVersion, fetchImpl = globalThis.fetch 
 }
 
 module.exports = {
+  autoUpdateChannel,
   checkManualUpdate,
   compareVersions,
   hasDeveloperIdSignatureOutput,

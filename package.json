@@ -81,7 +81,8 @@
     ],
     "publish": [
       {
-        "provider": "github"
+        "provider": "github",
+        "channel": "justpinit"
       }
     ],
     "directories": {
