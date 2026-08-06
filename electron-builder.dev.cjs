@@ -2,7 +2,7 @@ const { build } = require("./package.json");
 
 module.exports = {
   ...build,
-  appId: "com.johnnyz.pinit.dev",
+  appId: "xyz.justpinit.app.dev",
   productName: "Pin It Dev",
   directories: {
     ...build.directories,

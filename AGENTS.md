@@ -29,7 +29,7 @@ for permission after a rebuild, verify which app bundle is running and reset
 only Pin It's Screen Recording grant:
 
 ```sh
-tccutil reset ScreenCapture com.johnnyz.pinit
+tccutil reset ScreenCapture xyz.justpinit.app
 ```
 
 Do not change `build.appId` to work around a TCC problem. The durable release

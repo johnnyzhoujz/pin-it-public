@@ -17,6 +17,11 @@ it directly or bring it into an MCP-capable AI client.
 > Pin It is an early macOS-first project. Public installers are Developer ID
 > signed and notarized by Apple for both Apple silicon and Intel Macs.
 
+> [!NOTE]
+> Version 0.2.6 uses a new brand-neutral macOS application identity. When
+> upgrading from 0.2.5 or earlier, install the new DMG and grant macOS privacy
+> permissions again. Existing pins remain in the same local data directory.
+
 ## What it does
 
 - Pin the clipboard with `Command+Shift+I`.

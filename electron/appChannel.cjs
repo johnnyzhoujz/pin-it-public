@@ -1,7 +1,7 @@
 const channels = {
   development: {
     id: "development",
-    appId: "com.johnnyz.pinit.dev",
+    appId: "xyz.justpinit.app.dev",
     productName: "Pin It Dev",
     userDataDirectory: "Pin It Dev",
     keychainService: "Pin It Dev",
@@ -12,7 +12,7 @@ const channels = {
   },
   production: {
     id: "production",
-    appId: "com.johnnyz.pinit",
+    appId: "xyz.justpinit.app",
     productName: "Pin It",
     userDataDirectory: "Keep That",
     keychainService: "Pin It",

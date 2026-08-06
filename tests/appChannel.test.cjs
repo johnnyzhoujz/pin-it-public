@@ -6,7 +6,7 @@ assert.equal(resolveAppChannel({ isPackaged: false, packagedName: "Electron" }),
 assert.equal(resolveAppChannel({ isPackaged: true, packagedName: "Pin It Dev" }), channels.development);
 assert.equal(resolveAppChannel({ isPackaged: true, packagedName: "Pin It" }), channels.production);
 
-assert.equal(channels.development.appId, "com.johnnyz.pinit.dev");
+assert.equal(channels.development.appId, "xyz.justpinit.app.dev");
 assert.equal(channels.development.productName, "Pin It Dev");
 assert.equal(channels.development.userDataDirectory, "Pin It Dev");
 assert.equal(channels.development.keychainService, "Pin It Dev");
@@ -16,11 +16,13 @@ assert.equal(channels.development.screenshotHotkeyMac, "Command+Shift+O");
 assert.equal(channels.development.clipboardHotkeyMac, channels.production.clipboardHotkeyMac);
 assert.equal(channels.development.screenshotHotkeyMac, channels.production.screenshotHotkeyMac);
 
-assert.equal(channels.production.appId, "com.johnnyz.pinit");
+assert.equal(channels.production.appId, "xyz.justpinit.app");
 assert.equal(channels.production.productName, "Pin It");
 assert.equal(channels.production.userDataDirectory, "Keep That");
 assert.equal(channels.production.keychainService, "Pin It");
 assert.equal(channels.production.mcpServerName, "pin-it");
+assert.doesNotMatch(channels.development.appId, /johnny/i);
+assert.doesNotMatch(channels.production.appId, /johnny/i);
 
 assert.equal(devBuild.appId, channels.development.appId);
 assert.equal(devBuild.productName, channels.development.productName);
