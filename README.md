@@ -55,17 +55,8 @@ npm ci
 npm run desktop
 ```
 
-Source runs identify themselves as **Pin It Dev**. Development uses its own
-app-data directory, Keychain item, bundle identity, and `pin-it-dev` MCP name,
-so it cannot overwrite production pins or the production `pin-it`
-registration.
-
-| Channel | App | Bundle ID | Data directory | MCP name | Capture shortcuts |
-|---|---|---|---|---|---|
-| Production | `Pin It.app` | `com.johnnyz.pinit` | `~/Library/Application Support/Keep That` | `pin-it` | `Command+Shift+I` / `Command+Shift+O` |
-| Development | `Pin It Dev.app` | `com.johnnyz.pinit.dev` | `~/Library/Application Support/Pin It Dev` | `pin-it-dev` | `Command+Shift+I` / `Command+Shift+O` |
-
-Both channels use the product shortcuts. Run only one channel's UI at a time when testing global capture shortcuts because macOS allows only one app to register a particular global shortcut. The MCP servers remain independently testable while both client entries are configured.
+Development builds use isolated local storage and do not modify data from the
+installed production app.
 
 Build the two packaged channels separately:
 
