@@ -8,7 +8,7 @@ import * as z from "zod/v4";
 import { generateBuildPacket, normalizeProjectName, sortSnippets } from "../src/packet.js";
 import { parseStorePayload, readStoreText, resolvePinImagePath, resolveStorePath } from "../src/store/files.js";
 
-const serverVersion = "0.2.7";
+const serverVersion = "0.2.8";
 
 export async function createPinitMcpServer() {
   const server = new McpServer({

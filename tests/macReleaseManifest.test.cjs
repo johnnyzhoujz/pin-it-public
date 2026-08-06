@@ -11,6 +11,10 @@ const {
 
 const packageJson = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "package.json"), "utf8"));
 assert.equal(packageJson.build.dmg.sign, true);
+assert.equal(
+  packageJson.build.mac.extendInfo.NSScreenCaptureUsageDescription,
+  "Pin It captures the region of your screen that you choose to save."
+);
 for (const target of packageJson.build.mac.target) {
   assert.deepEqual(target.arch, ["arm64", "x64"]);
 }
@@ -19,7 +23,7 @@ assert.match(packageJson.scripts.release, /--arm64 --x64 --publish always$/);
 assert.equal(packageJson.build.publish[0].channel, UPDATE_CHANNEL);
 assert.equal(UPDATE_CHANNEL, "justpinit");
 assert.equal(UPDATE_MANIFEST_FILENAME, "justpinit-mac.yml");
-assert.equal(renderArtifactName(packageJson, "arm64", "dmg"), "Pin-It-0.2.7-arm64.dmg");
+assert.equal(renderArtifactName(packageJson, "arm64", "dmg"), "Pin-It-0.2.8-arm64.dmg");
 
 const artifacts = [
   artifact("x64", "zip"),

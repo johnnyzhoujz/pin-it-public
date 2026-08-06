@@ -18,7 +18,7 @@ it directly or bring it into an MCP-capable AI client.
 > signed and notarized by Apple for both Apple silicon and Intel Macs.
 
 > [!NOTE]
-> Version 0.2.7 fixes Screen Recording permission registration for region
+> Version 0.2.8 declares Pin It's Screen Recording use to macOS before region
 > capture. Pin It now makes the permission request from its signed application
 > process before opening the macOS region selector.
 >
