@@ -1,7 +1,7 @@
 {
   "name": "pin-it",
   "productName": "Pin It",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "private": true,
   "description": "A local pinboard for saving anything you want to reuse with any AI.",
   "author": "Johnny Z",
@@ -62,7 +62,7 @@
   },
   "main": "electron/main.cjs",
   "build": {
-    "appId": "com.johnnyz.pinit",
+    "appId": "xyz.justpinit.app",
     "productName": "Pin It",
     "artifactName": "Pin-It-${version}-${arch}.${ext}",
     "asar": true,

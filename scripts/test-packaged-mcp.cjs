@@ -8,12 +8,12 @@ const { promisify } = require("node:util");
 const execFileAsync = promisify(execFile);
 const channelDefinitions = {
   development: {
-    appId: "com.johnnyz.pinit.dev",
+    appId: "xyz.justpinit.app.dev",
     productName: "Pin It Dev",
     mcpServerName: "pin-it-dev"
   },
   production: {
-    appId: "com.johnnyz.pinit",
+    appId: "xyz.justpinit.app",
     productName: "Pin It",
     mcpServerName: "pin-it"
   }
